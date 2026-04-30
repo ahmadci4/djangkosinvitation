@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Pernikahan Sapowan & Nopisari - Konter Cinta</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        konter: {
+                            blue: '#0ea5e9',    // Biru terang khas provider
+                            dark: '#0f172a',    // Background layar gelap
+                            yellow: '#facc15',  // Kuning konter pulsa
+                            green: '#22c55e',   // Hijau transaksi sukses
+                            red: '#ef4444',     // Merah notif/kuota habis
+                            white: '#f8fafc',
+                            gray: '#334155'
+                        }
+                    },
+                    fontFamily: {
+                        digital: ['"Orbitron"', 'sans-serif'],
+                        mono: ['"Space Mono"', 'monospace'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body.locked { overflow: hidden; }
+        body { background-color: #0f172a; color: #f8fafc; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 10px; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #facc15; border-radius: 4px; }
+
+        /* Neon Borders & Effects */
+        .neon-border-blue {
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.5), inset 0 0 10px rgba(14, 165, 233, 0.2);
+            border: 1px solid #0ea5e9;
+        }
+        .neon-border-yellow {
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.5);
+            border: 2px solid #facc15;
+        }
+        .neon-text-blue {
+            text-shadow: 0 0 5px #0ea5e9, 0 0 15px #0ea5e9;
+        }
+
+        /* Signal Bar Animation */
+        .signal-bar { animation: blink 1.5s infinite alternate; }
+        .signal-bar:nth-child(1) { animation-delay: 0.1s; }
+        .signal-bar:nth-child(2) { animation-delay: 0.2s; }
+        .signal-bar:nth-child(3) { animation-delay: 0.3s; }
+        .signal-bar:nth-child(4) { animation-delay: 0.4s; }
+        @keyframes blink { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        /* Animasi Scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Tech Pattern Background */
+        .bg-tech-pattern {
+            background-image: radial-gradient(rgba(14, 165, 233, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Receipt Style */
+        .receipt-edge {
+            background-image: radial-gradient(circle at 10px 0, transparent 10px, #ffffff 11px);
+            background-size: 20px 20px;
+            background-repeat: repeat-x;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-konter-yellow selection:text-black bg-tech-pattern locked relative" id="body-container">
+
+    <!-- Audio Player -->
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Tombol Floating Musik (Ikon Nada Dering) -->
+    <button id="music-btn" onclick="toggleMusic()" class="fixed top-6 right-6 z-50 bg-konter-dark/90 backdrop-blur shadow-[0_0_15px_rgba(14,165,233,0.5)] w-12 h-12 flex items-center justify-center rounded-full text-konter-blue hover:scale-110 transition-transform hidden border border-konter-blue">
+        <i id="music-icon" class="fa-solid fa-volume-high"></i>
+    </button>
+
+    <!-- Navigasi Bawah (Menu Konter) -->
+    <div id="bottom-nav" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-konter-dark/95 backdrop-blur-md px-6 py-3 rounded-full neon-border-blue flex gap-6 hidden transition-all duration-700 opacity-0 translate-y-10">
+        <a href="#home" class="text-konter-white hover:text-konter-yellow transition-colors text-xl" title="Beranda"><i class="fa-solid fa-house"></i></a>
+        <a href="#couple" class="text-konter-white hover:text-konter-yellow transition-colors text-xl" title="Provider"><i class="fa-solid fa-sim-card"></i></a>
+        <a href="#event" class="text-konter-white hover:text-konter-yellow transition-colors text-xl" title="Jadwal"><i class="fa-solid fa-calendar-check"></i></a>
+        <a href="#gallery" class="text-konter-white hover:text-konter-yellow transition-colors text-xl" title="Galeri"><i class="fa-solid fa-mobile-screen"></i></a>
+        <a href="#rsvp" class="text-konter-white hover:text-konter-yellow transition-colors text-xl" title="Layanan"><i class="fa-solid fa-headset"></i></a>
+    </div>
+
+    <!-- ==================== COVER PAGE ==================== -->
+    <div id="cover-page" class="fixed inset-0 z-[60] flex flex-col items-center justify-center transition-transform duration-1000 ease-in-out bg-konter-dark bg-tech-pattern relative overflow-hidden">
+        
+        <!-- Signal Indicator Top Right -->
+        <div class="absolute top-6 right-6 flex items-end gap-1 text-konter-blue">
+            <span class="text-xs font-mono mr-2">4G LTE</span>
+            <div class="w-1.5 h-2 bg-konter-blue rounded-t-sm signal-bar"></div>
+            <div class="w-1.5 h-3 bg-konter-blue rounded-t-sm signal-bar"></div>
+            <div class="w-1.5 h-4 bg-konter-blue rounded-t-sm signal-bar"></div>
+            <div class="w-1.5 h-5 bg-konter-blue rounded-t-sm signal-bar"></div>
+        </div>
+        <div class="absolute top-6 left-6 text-konter-yellow font-mono text-sm">
+            <i class="fa-solid fa-battery-full"></i> 100%
+        </div>
+
+        <div class="z-10 text-center px-6 max-w-lg w-full relative">
+            <i class="fa-solid fa-tower-broadcast text-konter-yellow text-5xl mb-6 animate-pulse"></i>
+            
+            <p class="text-xs font-mono tracking-[0.3em] uppercase mb-4 text-konter-blue font-bold">Pusat Isi Ulang Cinta & Kebahagiaan</p>
+            <h1 class="text-5xl md:text-6xl font-digital mb-2 text-white neon-text-blue">SAPOWAN</h1>
+            <p class="text-2xl text-konter-yellow font-digital my-2">&</p>
+            <h1 class="text-5xl md:text-6xl font-digital mb-8 text-white neon-text-blue">NOPISARI</h1>
+            
+            <div class="bg-konter-gray/30 backdrop-blur-md rounded-2xl p-6 neon-border-blue mt-8">
+                <p class="text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Notifikasi Pesan Baru Untuk:</p>
+                <p id="guest-name" class="text-xl font-bold font-sans text-konter-yellow border-b border-konter-yellow/50 pb-2 inline-block px-4">Pelanggan Setia</p>
+                
+                <button onclick="openInvitation()" class="mt-8 px-8 py-4 bg-konter-blue hover:bg-blue-600 text-white rounded-full transition-all duration-300 flex items-center justify-center mx-auto text-sm tracking-widest font-bold shadow-[0_0_20px_rgba(14,165,233,0.5)] hover:scale-105 w-full">
+                    <i class="fa-solid fa-unlock-keyhole mr-3"></i> UNREG MASA LAJANG
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div id="main-content" class="relative opacity-0 transition-opacity duration-1000 ease-in-out hidden pb-24 pt-12">
+        
+        <!-- 1. OPENING QUOTE -->
+        <section id="home" class="py-16 px-6 text-center max-w-3xl mx-auto relative reveal">
+            <div class="bg-konter-blue/10 neon-border-blue p-8 rounded-3xl relative">
+                <i class="fa-solid fa-comment-sms absolute -top-5 left-1/2 -translate-x-1/2 text-4xl text-konter-yellow bg-konter-dark px-4"></i>
+                
+                <p class="text-sm md:text-base font-mono leading-relaxed text-gray-300 mt-4 text-left">
+                    > Dulu, setiap kali bertemu, selalu ada satu notifikasi pesan yang setia menemani:<br><br>
+                    <span class="text-konter-yellow font-bold text-lg">"Kapan nikah?"</span><br><br>
+                    > Kami hanya bisa tersenyum...<br>kadang sambil pura-pura sibuk ngecek hape, kadang sambil nawarin pulsa 😄<br><br>
+                    > Sampai akhirnya kami sadar, mungkin ini bukan sekadar pertanyaan…<br>tapi juga doa yang diam-diam dipanjatkan.<br><br>
+                    > Dan hari ini, di bawah sinyal jaringan yang sama dan penuh kebahagiaan, kami punya balasannya:<br><br>
+                    <span class="text-konter-green font-bold text-xl text-center block w-full">"IYA, KAMI AKAN MENIKAH." 💍</span><br>
+                    > Dengan penuh cinta, kami mengundang Anda untuk hadir dan menjadi bagian dari aktivasi paket seumur hidup kami.
+                </p>
+            </div>
+        </section>
+
+        <!-- 2. COUPLE PROFILE SECTION -->
+        <section id="couple" class="py-16 px-6 reveal">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-16 relative">
+                    <h2 class="font-digital text-4xl md:text-5xl text-konter-yellow mb-2 neon-text-blue">PROVIDER UTAMA</h2>
+                    <p class="text-konter-blue font-mono tracking-widest text-xs uppercase">Dua Jaringan Menjadi Satu Koneksi</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-16 text-center">
+                    <!-- Groom -->
+                    <div class="relative group bg-konter-gray/20 p-8 rounded-[2rem] neon-border-blue">
+                        <div class="absolute top-4 left-4 text-konter-green text-sm font-mono"><i class="fa-solid fa-wifi"></i> Connected</div>
+                        
+                        <div class="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-konter-blue shadow-[0_0_20px_rgba(14,165,233,0.3)] relative z-10 p-1">
+                            <img src="images/foto1.jpeg" alt="Sapowan" class="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-700"/>
+                        </div>
+                        <h3 class="text-3xl font-digital text-white mb-2">Sapowan Hadi</h3>
+                        <p class="text-gray-400 text-xs mb-4 font-mono uppercase">Pemilik Saldo Utama<br>Putra dari Bapak Fulan & Ibu Fulanah</p>
+                        <a href="#" class="inline-block px-4 py-2 bg-konter-blue/20 border border-konter-blue rounded-full text-xs font-bold text-konter-blue hover:bg-konter-blue hover:text-white transition-all"><i class="fa-brands fa-instagram mr-1"></i> @sapowanhadi</a>
+                    </div>
+
+                    <!-- Bride -->
+                    <div class="relative group bg-konter-gray/20 p-8 rounded-[2rem] neon-border-blue">
+                        <div class="absolute top-4 right-4 text-konter-green text-sm font-mono">Connected <i class="fa-solid fa-wifi"></i></div>
+
+                        <div class="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-konter-yellow shadow-[0_0_20px_rgba(250,204,21,0.3)] relative z-10 p-1">
+                            <img src="images/foto2.jpeg" alt="Nopisari" class="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-700"/>
+                        </div>
+                        <h3 class="text-3xl font-digital text-white mb-2">Nopisari</h3>
+                        <p class="text-gray-400 text-xs mb-4 font-mono uppercase">Penerima Kuota Hati<br>Putri dari Bapak Fulan & Ibu Fulanah</p>
+                        <a href="#" class="inline-block px-4 py-2 bg-konter-yellow/20 border border-konter-yellow rounded-full text-xs font-bold text-konter-yellow hover:bg-konter-yellow hover:text-black transition-all"><i class="fa-brands fa-instagram mr-1"></i> @nopisari</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. COUNTDOWN -->
+        <section class="py-20 px-6 relative overflow-hidden reveal">
+            <div class="max-w-4xl mx-auto text-center relative z-10">
+                <p class="font-mono text-xs text-konter-blue mb-2 tracking-widest uppercase"><i class="fa-solid fa-hourglass-half mr-2"></i>Masa Aktif Lajang Berakhir Dalam:</p>
+                <h2 class="font-digital text-4xl text-konter-yellow mb-10">COUNTDOWN TRANSAKSI</h2>
+                
+                <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+                    <div class="w-20 h-24 md:w-28 md:h-32 bg-konter-gray/50 text-white flex flex-col justify-center items-center rounded-xl border border-konter-blue shadow-[0_0_15px_rgba(14,165,233,0.2)]">
+                        <span id="cd-days" class="text-3xl md:text-5xl font-digital font-bold text-konter-blue">00</span>
+                        <span class="text-[10px] font-mono mt-2 text-gray-400 uppercase">Hari</span>
+                    </div>
+                    <div class="w-20 h-24 md:w-28 md:h-32 bg-konter-gray/50 text-white flex flex-col justify-center items-center rounded-xl border border-konter-blue shadow-[0_0_15px_rgba(14,165,233,0.2)]">
+                        <span id="cd-hours" class="text-3xl md:text-5xl font-digital font-bold text-konter-blue">00</span>
+                        <span class="text-[10px] font-mono mt-2 text-gray-400 uppercase">Jam</span>
+                    </div>
+                    <div class="w-20 h-24 md:w-28 md:h-32 bg-konter-gray/50 text-white flex flex-col justify-center items-center rounded-xl border border-konter-yellow shadow-[0_0_15px_rgba(250,204,21,0.2)]">
+                        <span id="cd-minutes" class="text-3xl md:text-5xl font-digital font-bold text-konter-yellow">00</span>
+                        <span class="text-[10px] font-mono mt-2 text-gray-400 uppercase">Menit</span>
+                    </div>
+                    <div class="w-20 h-24 md:w-28 md:h-32 bg-konter-gray/50 text-white flex flex-col justify-center items-center rounded-xl border border-konter-red shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                        <span id="cd-seconds" class="text-3xl md:text-5xl font-digital font-bold text-konter-red">00</span>
+                        <span class="text-[10px] font-mono mt-2 text-gray-400 uppercase">Detik</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. LOVE STORY -->
+        <section class="py-24 px-6 relative reveal bg-konter-gray/10">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-16">
+                    <p class="text-konter-blue font-mono tracking-widest text-xs font-bold uppercase mb-2"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Log Aktivitas</p>
+                    <h2 class="font-digital text-4xl text-konter-yellow">RIWAYAT TRANSAKSI CINTA</h2>
+                </div>
+
+                <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-konter-gray">
+                    
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group reveal">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-konter-blue text-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(14,165,233,0.8)] z-10">
+                            <i class="fa-solid fa-address-card text-sm"></i>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-konter-gray/40 border border-konter-blue/50 p-6 rounded-xl relative">
+                            <span class="text-konter-blue font-mono font-bold text-xs tracking-widest uppercase">2018 - Registrasi Perdana</span>
+                            <p class="text-gray-300 mt-2 text-sm">Kirim pesan pertama kalinya. Sinyal masih putus-nyambung, tapi nomor sudah berhasil disimpan di kontak darurat hati.</p>
+                        </div>
+                    </div>
+
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group reveal">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-konter-yellow text-black shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(250,204,21,0.8)] z-10">
+                            <i class="fa-solid fa-mobile-retro text-sm"></i>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-konter-gray/40 border border-konter-yellow/50 p-6 rounded-xl relative">
+                            <span class="text-konter-yellow font-mono font-bold text-xs tracking-widest uppercase">2021 - Top Up Pertama</span>
+                            <p class="text-gray-300 mt-2 text-sm">Jalan bareng pertama. Kuota obrolan serasa unlimited, nggak habis-habis sampai lupa waktu.</p>
+                        </div>
+                    </div>
+
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group reveal">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-konter-green text-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(34,197,94,0.8)] z-10">
+                            <i class="fa-solid fa-ring text-sm"></i>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-konter-gray/40 border border-konter-green/50 p-6 rounded-xl relative">
+                            <span class="text-konter-green font-mono font-bold text-xs tracking-widest uppercase">2025 - Upgrade ke 4G/5G</span>
+                            <p class="text-gray-300 mt-2 text-sm">Status resmi ditingkatkan. Keluarga besar bertemu untuk menyetujui pembaruan sistem ke jenjang yang lebih serius.</p>
+                        </div>
+                    </div>
+
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group reveal">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-konter-red text-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(239,68,68,0.8)] z-10">
+                            <i class="fa-solid fa-check-double text-sm"></i>
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-konter-gray/40 border border-konter-red/50 p-6 rounded-xl relative">
+                            <span class="text-konter-red font-mono font-bold text-xs tracking-widest uppercase">2026 - Paket Unlimited Aktif</span>
+                            <p class="text-gray-300 mt-2 text-sm">Transaksi sukses! Paket seumur hidup resmi diaktifkan. Masa aktif: Selamanya.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. EVENT DETAILS -->
+        <section id="event" class="py-20 px-6 reveal">
+            <div class="max-w-4xl mx-auto text-center">
+                <p class="font-digital text-4xl text-konter-yellow mb-12">LOKASI JARINGAN UTAMA</p>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                    <!-- AKAD -->
+                    <div class="bg-konter-gray/30 p-8 rounded-2xl border border-konter-blue text-left relative overflow-hidden hover:-translate-y-2 transition-transform">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-konter-blue"></div>
+                        <div class="flex justify-between items-start mb-6 border-b border-konter-gray pb-4">
+                            <div>
+                                <h3 class="text-xl font-bold font-digital text-konter-blue tracking-widest">AKAD NIKAH</h3>
+                                <p class="text-gray-400 font-mono text-xs mt-1">Status: Pending <i class="fa-solid fa-spinner animate-spin ml-1"></i></p>
+                            </div>
+                            <i class="fa-solid fa-file-signature text-3xl text-konter-blue opacity-50"></i>
+                        </div>
+                        
+                        <div class="space-y-4 font-mono text-sm text-gray-300">
+                            <p class="flex items-center"><i class="fa-solid fa-calendar-days w-6 text-konter-yellow"></i> 20 Des 2026</p>
+                            <p class="flex items-center"><i class="fa-solid fa-clock w-6 text-konter-yellow"></i> 08:00 WIB - Selesai</p>
+                            <p class="flex items-start"><i class="fa-solid fa-location-dot w-6 text-konter-yellow mt-1"></i> <span>Gedung Pusat Jaringan<br/><span class="text-xs text-gray-500">Lombok Tengah, NTB</span></span></p>
+                        </div>
+                    </div>
+
+                    <!-- RESEPSI -->
+                    <div class="bg-konter-gray/30 p-8 rounded-2xl border border-konter-green text-left relative overflow-hidden hover:-translate-y-2 transition-transform">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-konter-green"></div>
+                        <div class="flex justify-between items-start mb-6 border-b border-konter-gray pb-4">
+                            <div>
+                                <h3 class="text-xl font-bold font-digital text-konter-green tracking-widest">RESEPSI</h3>
+                                <p class="text-gray-400 font-mono text-xs mt-1">Status: Scheduled <i class="fa-solid fa-calendar-check ml-1"></i></p>
+                            </div>
+                            <i class="fa-solid fa-champagne-glasses text-3xl text-konter-green opacity-50"></i>
+                        </div>
+                        
+                        <div class="space-y-4 font-mono text-sm text-gray-300">
+                            <p class="flex items-center"><i class="fa-solid fa-calendar-days w-6 text-konter-yellow"></i> 20 Des 2026</p>
+                            <p class="flex items-center"><i class="fa-solid fa-clock w-6 text-konter-yellow"></i> 11:00 WIB - Selesai</p>
+                            <p class="flex items-start"><i class="fa-solid fa-location-dot w-6 text-konter-yellow mt-1"></i> <span>Gedung Pusat Jaringan<br/><span class="text-xs text-gray-500">Lombok Tengah, NTB</span></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. MAPS -->
+                <div class="bg-konter-gray/50 p-4 rounded-3xl neon-border-blue max-w-3xl mx-auto reveal mt-12">
+                    <div class="bg-konter-dark p-4 rounded-2xl border border-konter-gray">
+                        <p class="font-mono font-bold text-white text-sm mb-4 text-left border-b border-konter-gray pb-2"><i class="fa-solid fa-satellite-dish text-konter-blue mr-2 animate-pulse"></i> MELACAK KOORDINAT LOKASI...</p>
+                        
+                        <!-- Embed Maps Generic/Placeholder -->
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126214.44498305047!2d116.20815194411135!3d-8.878544976721532!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dcc51a41566cf29%3A0xc3c94294cc238b6f!2sPantai%20Tanjung%20Aan!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" width="100%" height="300" style="border:0; border-radius: 8px; filter: invert(90%) hue-rotate(180deg);" allowfullscreen="" loading="lazy"></iframe>
+                        
+                        <!-- Tombol Buka Google Maps menggunakan URL dari user -->
+                        <a href="https://maps.app.goo.gl/zmy4ebxzbcNTUY3r6" target="_blank" class="block w-full mt-4 py-3 bg-konter-blue text-white font-bold font-mono text-sm rounded-lg hover:bg-blue-600 transition-colors shadow-[0_0_10px_rgba(14,165,233,0.5)]">
+                            <i class="fa-solid fa-location-arrow mr-2"></i> BUKA APLIKASI MAPS
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. GALLERY (Tangkapan Layar) -->
+        <section id="gallery" class="py-20 px-6 relative reveal">
+            <div class="max-w-5xl mx-auto text-center relative z-10">
+                <p class="font-digital text-4xl text-konter-yellow mb-2 neon-text-blue">GALERI TANGKAPAN LAYAR</p>
+                <p class="text-gray-400 font-mono text-xs mb-12 uppercase">Folder: /Pictures/Kenangan_Berdua</p>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 px-4">
+                    <div class="relative group rounded-xl overflow-hidden border-2 border-konter-gray hover:border-konter-blue transition-colors reveal">
+                        <div class="absolute top-2 left-2 bg-black/60 px-2 rounded font-mono text-[8px] text-white z-10 border border-white/20">IMG_001.JPG</div>
+                        <img src="images/foto3.jpeg" alt="Galeri 1" class="w-full aspect-square object-cover transform group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="relative group rounded-xl overflow-hidden border-2 border-konter-gray hover:border-konter-blue transition-colors reveal" style="transition-delay: 100ms;">
+                        <div class="absolute top-2 left-2 bg-black/60 px-2 rounded font-mono text-[8px] text-white z-10 border border-white/20">IMG_002.JPG</div>
+                        <img src="images/foto4.jpeg" alt="Galeri 2" class="w-full aspect-square object-cover transform group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="relative group rounded-xl overflow-hidden border-2 border-konter-gray hover:border-konter-blue transition-colors reveal" style="transition-delay: 200ms;">
+                        <div class="absolute top-2 left-2 bg-black/60 px-2 rounded font-mono text-[8px] text-white z-10 border border-white/20">IMG_003.JPG</div>
+                        <img src="images/foto5.jpeg" alt="Galeri 3" class="w-full aspect-square object-cover transform group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="relative group rounded-xl overflow-hidden border-2 border-konter-gray hover:border-konter-blue transition-colors reveal" style="transition-delay: 300ms;">
+                        <div class="absolute top-2 left-2 bg-black/60 px-2 rounded font-mono text-[8px] text-white z-10 border border-white/20">IMG_004.JPG</div>
+                        <img src="images/foto6.jpeg" alt="Galeri 4" class="w-full aspect-square object-cover transform group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. GIFT (Transfer Pulsa) -->
+        <section class="py-20 px-6 reveal">
+            <div class="max-w-2xl mx-auto text-center">
+                <div class="bg-white text-black p-8 md:p-10 rounded-xl relative overflow-hidden receipt-edge font-mono">
+                    
+                    <div class="text-center mb-6 border-b-2 border-dashed border-gray-300 pb-6">
+                        <i class="fa-solid fa-store text-4xl mb-2 text-black"></i>
+                        <h2 class="font-bold text-2xl uppercase tracking-widest">Struk Transfer</h2>
+                        <p class="text-xs text-gray-500">No. Transaksi: #WDG-20261220</p>
+                    </div>
+
+                    <p class="text-sm font-medium mb-6 leading-relaxed">Kehadiran & doa Anda adalah top-up terbaik. Namun jika Anda ingin melakukan transfer *cashless* sebagai kado, dapat dikirimkan ke nomor rekening di bawah ini:</p>
+
+                    <!-- BCA -->
+                    <div class="bg-gray-100 p-4 rounded-lg mb-4 text-left border border-gray-200">
+                        <p class="text-xs text-gray-500 font-bold uppercase mb-1">Bank BCA</p>
+                        <p class="font-bold text-xl tracking-widest text-black mb-1">0987 6543 21</p>
+                        <p class="text-xs font-bold mb-3">a.n Nopisari</p>
+                        <button onclick="copyToClipboard('0987654321', this)" class="w-full py-2 bg-black text-white rounded transition-colors text-xs tracking-widest font-bold">
+                            <i class="fa-regular fa-copy mr-2"></i> SALIN REKENING
+                        </button>
+                    </div>
+
+                    <!-- BRI -->
+                    <div class="bg-gray-100 p-4 rounded-lg text-left border border-gray-200">
+                        <p class="text-xs text-gray-500 font-bold uppercase mb-1">Bank BRI</p>
+                        <p class="font-bold text-xl tracking-widest text-black mb-1">1234 5678 9012</p>
+                        <p class="text-xs font-bold mb-3">a.n Sapowan Hadi</p>
+                        <button onclick="copyToClipboard('123456789012', this)" class="w-full py-2 bg-black text-white rounded transition-colors text-xs tracking-widest font-bold">
+                            <i class="fa-regular fa-copy mr-2"></i> SALIN REKENING
+                        </button>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t-2 border-dashed border-gray-300 text-xs text-gray-500 text-center">
+                        <p>--- TERIMA KASIH ATAS TRANSAKSI ANDA ---</p>
+                        <p>Simpan struk ini sebagai bukti pembayaran sah.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. UCAPAN TERIMA KASIH / CREDITS -->
+        <section class="py-20 px-6 bg-konter-dark text-white reveal border-y border-konter-gray">
+            <div class="max-w-4xl mx-auto text-center">
+                <i class="fa-solid fa-handshake-angle text-konter-blue text-4xl mb-4 animate-pulse"></i>
+                <h2 class="font-digital text-3xl mb-8 uppercase tracking-widest text-konter-yellow">Didukung Oleh Jaringan:</h2>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                    <div class="p-4 border border-konter-blue/30 rounded-xl bg-konter-blue/5 hover:bg-konter-blue/20 transition-colors">
+                        <i class="fa-solid fa-guitar text-2xl text-konter-blue mb-2"></i>
+                        <p class="text-xs text-gray-400 font-mono">Full Band</p>
+                        <p class="font-bold text-sm">Djangkos Music</p>
+                    </div>
+                    <div class="p-4 border border-konter-blue/30 rounded-xl bg-konter-blue/5 hover:bg-konter-blue/20 transition-colors">
+                        <i class="fa-solid fa-camera text-2xl text-konter-blue mb-2"></i>
+                        <p class="text-xs text-gray-400 font-mono">Fotografer</p>
+                        <p class="font-bold text-sm">Endoq Potografer</p>
+                    </div>
+                    <div class="p-4 border border-konter-blue/30 rounded-xl bg-konter-blue/5 hover:bg-konter-blue/20 transition-colors">
+                        <i class="fa-solid fa-clipboard-check text-2xl text-konter-blue mb-2"></i>
+                        <p class="text-xs text-gray-400 font-mono">WO</p>
+                        <p class="font-bold text-sm">Dream Wedding</p>
+                    </div>
+                    <div class="p-4 border border-konter-blue/30 rounded-xl bg-konter-blue/5 hover:bg-konter-blue/20 transition-colors">
+                        <i class="fa-solid fa-microphone text-2xl text-konter-blue mb-2"></i>
+                        <p class="text-xs text-gray-400 font-mono">MC</p>
+                        <p class="font-bold text-sm">Hafidz Zahrack</p>
+                    </div>
+                </div>
+
+                <!-- Special Thanks for Exes -->
+                <div class="p-6 border-2 border-konter-red/50 rounded-2xl bg-konter-red/10 relative overflow-hidden mx-auto max-w-2xl transform rotate-1 hover:rotate-0 transition-transform">
+                    <div class="absolute -right-4 -top-4 text-6xl opacity-10 text-konter-red"><i class="fa-solid fa-heart-crack"></i></div>
+                    <h3 class="text-lg font-bold text-konter-red mb-2 uppercase tracking-widest font-mono">⚠️ Peringatan Sistem: VIP Guest</h3>
+                    <p class="text-sm font-medium italic">"Dan yang terakhir, ucapan terima kasih sebesar-besarnya kepada mantan-mantan dan ciwi-ciwi yang menyesal namun sempat hadir pada hari ini. Penyesalan selalu datang terlambat, karena slot ini sudah resmi sold out!" 😂</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. RSVP & WISHES (Customer Service) -->
+        <section id="rsvp" class="py-20 px-6 reveal">
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-konter-gray/20 p-8 md:p-12 rounded-3xl neon-border-blue relative">
+                    <div class="text-center mb-8">
+                        <h2 class="font-digital font-bold text-3xl text-konter-yellow mb-2 uppercase tracking-widest"><i class="fa-solid fa-headset mr-2 text-konter-blue"></i>Layanan Pelanggan</h2>
+                        <p class="text-xs font-mono text-gray-400">Silakan tinggalkan review, ulasan, atau konfirmasi kehadiran Anda di bawah ini.</p>
+                    </div>
+                    
+                    <form onsubmit="submitRSVP(event)" id="rsvp-form" class="space-y-4 font-mono">
+                        <div>
+                            <input type="text" id="guest-input-name" required class="w-full bg-konter-dark border border-konter-gray focus:border-konter-blue rounded-lg px-4 py-3 text-white focus:outline-none transition-colors text-sm" placeholder="> Input Nama_Pengguna..." />
+                        </div>
+                        
+                        <div>
+                            <textarea id="guest-input-msg" rows="3" required class="w-full bg-konter-dark border border-konter-gray focus:border-konter-blue rounded-lg px-4 py-3 text-white focus:outline-none transition-colors resize-none text-sm" placeholder="> Input Pesan_Teks/Ulasan..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-konter-blue hover:bg-blue-600 text-white font-bold tracking-widest rounded-lg px-4 py-3 transition-colors flex items-center justify-center shadow-[0_0_15px_rgba(14,165,233,0.3)] text-sm">
+                            <i class="fa-solid fa-paper-plane text-lg mr-2"></i> KIRIM ULASAN
+                        </button>
+                    </form>
+
+                    <!-- Tempat Menampilkan Komentar -->
+                    <div class="mt-10 border-t border-konter-gray pt-6">
+                        <h3 class="text-xs font-mono text-konter-yellow mb-4 uppercase tracking-widest">Log Pesan Masuk:</h3>
+                        <div id="comments-list" class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar pr-2 text-left font-mono">
+                            <!-- Komentar Dummy Awal -->
+                            <div class="bg-konter-dark/50 p-3 rounded-lg border border-konter-gray/50">
+                                <p class="font-bold text-konter-blue text-xs">Keluarga Bpk. Budi_01</p>
+                                <p class="text-xs text-gray-300 mt-1">> Selamat menempuh hidup baru! Semoga sinyal keluarganya selalu kuat dan rezekinya unlimited.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. CLOSING & FOOTER -->
+        <footer class="relative pt-24 pb-12 text-center mt-12 overflow-hidden flex flex-col items-center justify-center reveal">
+            <div class="z-10 px-6 max-w-2xl mx-auto">
+                <i class="fa-solid fa-power-off text-konter-red text-3xl mb-6 opacity-80 hover:text-white cursor-pointer transition-colors" title="Log Out"></i>
+                <p class="text-base font-mono leading-relaxed mb-8 text-gray-400">
+                    "Terima kasih telah membaca syarat & ketentuan hati kami. Sampai jumpa di jaringan yang sama pada hari H nanti."
+                </p>
+                <h2 class="font-digital text-4xl md:text-5xl text-white neon-text-blue mb-4">SAPOWAN & NOPISARI</h2>
+                <p class="font-mono text-xs text-konter-yellow mb-16">[ SYSTEM CONNECTION ESTABLISHED ]</p>
+            </div>
+
+            <!-- Custom Footer Djangkos -->
+            <div class="z-10 w-full border-t border-konter-gray pt-6 mt-8 flex flex-col items-center">
+                <p class="text-[10px] text-gray-500 font-mono mb-2 uppercase">Sistem Undangan Digital Dikembangkan Oleh:</p>
+                <a href="https://www.djangkos.com" target="_blank" class="text-sm font-bold tracking-widest text-konter-white hover:text-konter-blue transition-colors font-digital">
+                    WWW.DJANGKOS.COM
+                </a>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // 1. Ambil Nama Tamu dari Link (Contoh: web.com/?to=Bapak Budi)
+        const urlParams = new URLSearchParams(window.location.search);
+        const guestName = urlParams.get('to') || urlParams.get('kpd') || 'Pelanggan Setia';
+        document.getElementById('guest-name').innerText = guestName;
+
+        const coverPage = document.getElementById('cover-page');
+        const mainContent = document.getElementById('main-content');
+        const bgMusic = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-btn');
+        const musicIcon = document.getElementById('music-icon');
+        const bodyContainer = document.getElementById('body-container');
+        const bottomNav = document.getElementById('bottom-nav');
+        let isPlaying = false;
+
+        // 2. Fungsi Buka Undangan
+        function openInvitation() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) { return clearInterval(interval); }
+                var particleCount = 50 * (timeLeft / duration);
+                // Konfeti disesuaikan dengan warna konter
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, colors: ['#0ea5e9', '#facc15', '#22c55e', '#ef4444'] }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, colors: ['#0ea5e9', '#facc15', '#22c55e', '#ef4444'] }));
+            }, 250);
+
+            coverPage.style.transform = 'translateY(-100vh)';
+            
+            setTimeout(() => {
+                coverPage.style.display = 'none';
+                mainContent.classList.remove('hidden');
+
+                setTimeout(() => { 
+                    mainContent.style.opacity = '1'; 
+                    bottomNav.classList.remove('hidden');
+                    setTimeout(() => {
+                        bottomNav.classList.remove('opacity-0', 'translate-y-10');
+                    }, 100);
+                    reveal(); 
+                }, 50);
+
+                bodyContainer.classList.remove('locked');
+                musicBtn.classList.remove('hidden');
+                
+                bgMusic.volume = 0.5;
+                toggleMusic();
+            }, 800);
+        }
+
+        // 3. Audio Controller
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicIcon.classList.remove('fa-volume-high');
+                musicIcon.classList.add('fa-volume-xmark');
+                musicBtn.classList.add('opacity-50');
+            } else {
+                bgMusic.play();
+                musicIcon.classList.remove('fa-volume-xmark');
+                musicIcon.classList.add('fa-volume-high');
+                musicBtn.classList.remove('opacity-50');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // 4. Countdown Timer
+        const weddingDate = new Date(2026, 11, 20, 8, 0, 0).getTime();
+        const cdInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("cd-days").innerText = days < 10 ? '0'+days : days;
+            document.getElementById("cd-hours").innerText = hours < 10 ? '0'+hours : hours;
+            document.getElementById("cd-minutes").innerText = minutes < 10 ? '0'+minutes : minutes;
+            document.getElementById("cd-seconds").innerText = seconds < 10 ? '0'+seconds : seconds;
+
+            if (distance < 0) {
+                clearInterval(cdInterval);
+                document.getElementById("cd-days").innerText = "00";
+                document.getElementById("cd-hours").innerText = "00";
+                document.getElementById("cd-minutes").innerText = "00";
+                document.getElementById("cd-seconds").innerText = "00";
+            }
+        }, 1000);
+
+        // 5. Copy Rekening
+        function copyToClipboard(text, btnElement) {
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            const originalHTML = btnElement.innerHTML;
+            btnElement.innerHTML = '<i class="fa-solid fa-check mr-2"></i> BERHASIL DI-COPY';
+            btnElement.classList.replace('bg-black', 'bg-green-600');
+            
+            setTimeout(() => {
+                btnElement.innerHTML = originalHTML;
+                btnElement.classList.replace('bg-green-600', 'bg-black');
+            }, 2000);
+        }
+
+        // 6. Animasi Scroll
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 50; 
+
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+
+        // 7. Komentar Langsung di Web (RSVP)
+        function submitRSVP(event) {
+            event.preventDefault(); 
+            
+            const name = document.getElementById("guest-input-name").value;
+            const msg = document.getElementById("guest-input-msg").value;
+            
+            const commentDiv = document.createElement("div");
+            commentDiv.className = "bg-konter-dark/50 p-3 rounded-lg border border-konter-gray/50 fade-in-up";
+            
+            commentDiv.innerHTML = `
+                <p class="font-bold text-konter-blue text-xs">${name}</p>
+                <p class="text-xs text-gray-300 mt-1">> ${msg}</p>
+            `;
+            
+            const list = document.getElementById("comments-list");
+            list.insertBefore(commentDiv, list.firstChild);
+            
+            document.getElementById("guest-input-name").value = "";
+            document.getElementById("guest-input-msg").value = "";
+            
+            alert("Pesan berhasil di-submit ke server hati kami! Terima kasih.");
+        }
+    </script>
+</body>
+</html>
