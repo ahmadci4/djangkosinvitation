@@ -1,585 +1,488 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DJANGKOS WEDDING - Platform Undangan Digital Multi-Event</title>
-    <meta name="description" content="Buat undangan digital profesional untuk Wedding, Khitanan, Aqiqah, dan berbagai acara dalam satu platform.">
+    <title>DJANGKOS - Platform Undangan Digital Multi-Event</title>
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                    },
                     colors: {
-                        gold: {
-                            400: '#FBBF24',
-                            500: '#F59E0B',
-                            600: '#D97706',
-                        },
-                        dark: '#111827'
+                        primary: '#d97706', /* amber-600 */
+                        dark: '#1f2937',    /* gray-800 */
                     }
                 }
             }
         }
     </script>
+
     <style>
-        /* Custom CSS & Animations */
+        html { scroll-behavior: smooth; }
         .spa-view { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
         .spa-view.active { display: block; opacity: 1; }
+        .spa-view.flex-view.active { display: flex; }
         
-        .gold-gradient {
-            background: linear-gradient(135deg, #FBBF24 0%, #D97706 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .gold-bg-gradient {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-        }
-
-        /* Hide scrollbar for sidebar but keep functionality */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Modal Animation */
+        .modal-overlay { display: none; opacity: 0; transition: opacity 0.2s ease-in-out; }
+        .modal-overlay.active { display: flex; opacity: 1; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans">
+<body class="bg-gray-50 text-gray-800 font-sans antialiased overflow-x-hidden">
 
-    <!-- MAIN NAVIGATION (Visible on Landing & Auth, hidden on Dashboard/Builder) -->
-    <nav id="main-nav" class="fixed w-full bg-white/90 backdrop-blur-md z-50 border-b border-slate-200 transition-all duration-300">
+    <!-- NAVBAR PUBLIK -->
+    <nav id="public-navbar" class="fixed w-full bg-white shadow-sm z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="app.navigate('home')">
-                    <span class="font-serif text-2xl font-bold text-dark tracking-tight">INVIT<span class="text-gold-500">ARA</span></span>
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#home" class="text-2xl font-black text-dark tracking-tighter">
+                        DJANG<span class="text-primary">KOS</span>
+                    </a>
                 </div>
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#features" class="text-slate-600 hover:text-gold-500 font-medium transition-colors">Fitur</a>
-                    <a href="#themes" class="text-slate-600 hover:text-gold-500 font-medium transition-colors">Tema</a>
-                    <a href="#pricing" class="text-slate-600 hover:text-gold-500 font-medium transition-colors">Harga</a>
-                    <div class="border-l border-slate-300 h-6 mx-2"></div>
-                    <button onclick="app.navigate('auth')" class="text-slate-800 font-medium hover:text-gold-600 transition-colors">Masuk</button>
-                    <button onclick="app.navigate('auth')" class="gold-bg-gradient text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg hover:shadow-gold-500/30 transition-all transform hover:-translate-y-0.5">Buat Undangan</button>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-gray-600 hover:text-primary font-medium transition">Beranda</a>
+                    <a href="#home" class="text-gray-600 hover:text-primary font-medium transition">Fitur</a>
+                    <a href="#home" class="text-gray-600 hover:text-primary font-medium transition">Harga</a>
                 </div>
-                <!-- Mobile menu button -->
-                <div class="md:hidden flex items-center">
-                    <button class="text-slate-600 hover:text-slate-900 focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
+                <div class="flex items-center space-x-4" id="nav-auth-buttons">
+                    <a href="#login" class="text-gray-600 hover:text-primary font-medium transition hidden sm:block">Masuk</a>
+                    <a href="#register" class="bg-primary text-white px-5 py-2 rounded-lg hover:bg-amber-700 transition font-medium shadow-md">
+                        Buat Undangan
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- VIEW: HOME (LANDING PAGE) -->
-    <main id="view-home" class="spa-view active flex-grow">
-        
-        <!-- Hero Section -->
-        <section class="pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-                <div class="text-center max-w-4xl mx-auto">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 text-amber-800 font-medium text-sm mb-6">
-                        <i class="fas fa-star text-gold-500"></i> Platform SaaS Undangan Digital Generasi Baru
+    <main id="app-container" class="pt-16 min-h-screen flex flex-col">
+
+        <!-- ========================================== -->
+        <!-- HALAMAN: HOME -->
+        <!-- ========================================== -->
+        <section id="home" class="spa-view active flex-grow">
+            <!-- (Sama seperti sebelumnya) -->
+            <div class="bg-white">
+                <div class="max-w-7xl mx-auto px-4 py-20 md:py-32 flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 text-center md:text-left mb-12 md:mb-0 md:pr-10">
+                        <div class="inline-block bg-amber-100 text-amber-800 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
+                            Platform SaaS Undangan #1
+                        </div>
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-dark leading-tight mb-6">
+                            Satu Undangan Untuk <span class="text-primary">Semua Acara</span> Anda
+                        </h1>
+                        <p class="text-lg text-gray-600 mb-8">
+                            Pernikahan, Khitanan, dan Aqiqah dalam satu link. Kelola tamu, dapatkan RSVP, dan bagikan momen bahagia Anda dengan elegan menggunakan DJANGKOS.
+                        </p>
+                        <div class="flex justify-center md:justify-start">
+                            <a href="#register" class="bg-primary text-white px-8 py-3.5 rounded-lg text-lg font-medium hover:bg-amber-700 transition shadow-lg">
+                                Mulai Sekarang - Gratis
+                            </a>
+                        </div>
                     </div>
-                    <h1 class="text-4xl md:text-6xl font-serif font-bold text-dark leading-tight mb-6">
-                        Buat Undangan Digital yang <span class="gold-gradient">Berkesan & Tak Terbatas</span>
-                    </h1>
-                    <p class="text-lg md:text-xl text-slate-600 mb-10 leading-relaxed">
-                        Wedding, Khitanan, Aqiqah, Tasyakuran, dan berbagai acara lainnya dalam satu platform. Gabungkan beberapa acara dalam satu undangan dengan mudah.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button onclick="app.navigate('auth')" class="gold-bg-gradient text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-xl hover:shadow-gold-500/40 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                            Buat Undangan Gratis <i class="fas fa-arrow-right"></i>
+                    <div class="md:w-1/2 w-full">
+                        <div class="bg-gray-100 rounded-3xl aspect-[4/3] flex items-center justify-center text-gray-400 border border-gray-200 shadow-xl">
+                            <span>Preview Desain Undangan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- HALAMAN: LOGIN -->
+        <!-- ========================================== -->
+        <section id="login" class="spa-view flex-grow">
+            <!-- (Sama seperti sebelumnya) -->
+            <div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
+                <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
+                    <h2 class="text-2xl font-bold text-dark text-center mb-6">Masuk ke DJANGKOS</h2>
+                    <form id="form-login" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="login-email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <input type="password" id="login-password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                        </div>
+                        <button type="submit" class="w-full bg-dark text-white py-2.5 rounded-lg font-medium hover:bg-gray-900 transition">Login</button>
+                    </form>
+                    <p class="text-center mt-6 text-sm text-gray-600">Belum punya akun? <a href="#register" class="text-primary hover:underline font-medium">Daftar di sini</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- HALAMAN: REGISTER -->
+        <!-- ========================================== -->
+        <section id="register" class="spa-view flex-grow">
+            <!-- (Sama seperti sebelumnya) -->
+            <div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
+                <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
+                    <h2 class="text-2xl font-bold text-dark text-center mb-6">Buat Akun Baru</h2>
+                    <form id="form-register" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                            <input type="text" id="register-name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="register-email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <input type="password" id="register-password" required minlength="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                        </div>
+                        <button type="submit" class="w-full bg-primary text-white py-2.5 rounded-lg font-medium hover:bg-amber-700 transition">Daftar Sekarang</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- HALAMAN: DASHBOARD SAAS (DENGAN CRUD)      -->
+        <!-- ========================================== -->
+        <section id="dashboard" class="spa-view flex-view w-full min-h-screen bg-gray-50 relative">
+            
+            <!-- Sidebar Kiri -->
+            <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col fixed h-full z-10">
+                <div class="h-16 flex items-center px-6 border-b border-gray-200">
+                    <a href="#dashboard" class="text-2xl font-black text-dark tracking-tighter">
+                        DJANG<span class="text-primary">KOS</span>
+                    </a>
+                </div>
+                <div class="p-4 flex-1 overflow-y-auto">
+                    <div class="space-y-1">
+                        <a href="#dashboard" class="flex items-center px-4 py-2.5 bg-amber-50 text-primary rounded-lg font-medium">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                            Dashboard
+                        </a>
+                        <!-- Menu lainnya akan aktif nanti -->
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Area Konten Utama -->
+            <div class="flex-1 flex flex-col md:ml-64 w-full">
+                
+                <!-- Topbar -->
+                <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <h2 class="text-lg font-bold text-gray-800">Dashboard Overview</h2>
+                    <div class="flex items-center gap-4 ml-auto">
+                        <div class="text-right hidden sm:block">
+                            <p id="dash-username" class="text-sm font-bold text-gray-700">Loading...</p>
+                        </div>
+                        <button id="btn-logout" class="ml-2 text-sm bg-red-50 text-red-500 hover:bg-red-500 hover:text-white px-3 py-1.5 rounded-md font-medium transition">Keluar</button>
+                    </div>
+                </header>
+
+                <!-- Isi Dashboard -->
+                <main class="p-6">
+                    <div class="flex justify-between items-end mb-8">
+                        <div>
+                            <h1 class="text-2xl font-bold text-dark">Undangan Saya</h1>
+                            <p class="text-gray-500 mt-1">Kelola semua undangan digital Anda.</p>
+                        </div>
+                        <button id="btn-open-modal" class="bg-primary text-white px-5 py-2.5 rounded-lg font-medium hover:bg-amber-700 transition shadow-md flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Buat Undangan
                         </button>
-                        <button class="bg-white text-slate-800 border-2 border-slate-200 px-8 py-4 rounded-full font-semibold text-lg hover:border-gold-500 hover:text-gold-600 transition-all flex items-center justify-center gap-2">
-                            <i class="fas fa-layer-group"></i> Jelajahi Tema
+                    </div>
+
+                    <!-- Indikator Loading -->
+                    <div id="loading-invitations" class="text-center py-10 hidden">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                        <p class="text-gray-500">Memuat data undangan...</p>
+                    </div>
+
+                    <!-- Area Kosong (Akan disembunyikan via JS jika ada data) -->
+                    <div id="empty-state" class="bg-white rounded-2xl border border-gray-200 border-dashed p-12 text-center flex flex-col items-center justify-center">
+                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 mb-4">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Belum Ada Undangan</h3>
+                        <p class="text-gray-500 mb-6">Mulai buat undangan pertama Anda sekarang.</p>
+                    </div>
+
+                    <!-- Grid List Undangan (Akan diisi oleh JS) -->
+                    <div id="invitation-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                        <!-- Data undangan akan dirender di sini -->
+                    </div>
+                </main>
+            </div>
+
+            <!-- MODAL: BUAT UNDANGAN BARU -->
+            <div id="modal-create" class="modal-overlay fixed inset-0 bg-gray-900 bg-opacity-50 z-50 items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all">
+                    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-dark">Buat Undangan Baru</h3>
+                        <button id="btn-close-modal" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Features Section -->
-        <section id="features" class="py-20 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl font-serif font-bold text-dark mb-4">Fitur Utama DJANGKOS WEDDING</h2>
-                    <p class="text-slate-600 max-w-2xl mx-auto">Bukan sekadar undangan biasa. Sistem kami dirancang untuk fleksibilitas maksimal sesuai kebutuhan acara Anda.</p>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                    <!-- Feature 1 -->
-                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 hover:shadow-xl hover:border-gold-300 transition-all group">
-                        <div class="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center text-gold-600 text-2xl mb-6 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-calendar-plus"></i>
+                    <form id="form-create-invitation" class="p-6 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Judul Undangan / Nama Pasangan</label>
+                            <input type="text" id="inv-title" placeholder="Contoh: Ahmad & Siti" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
                         </div>
-                        <h3 class="text-xl font-bold text-dark mb-3">Multi-Occasion & Event</h3>
-                        <p class="text-slate-600">Gabungkan Akad Nikah, Resepsi, dan Khitanan dalam satu undangan tanpa repot. Hemat dan praktis.</p>
-                    </div>
-                    <!-- Feature 2 -->
-                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 hover:shadow-xl hover:border-gold-300 transition-all group">
-                        <div class="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center text-gold-600 text-2xl mb-6 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-users"></i>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Utama</label>
+                            <select id="inv-category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white">
+                                <option value="wedding">Pernikahan</option>
+                                <option value="khitan">Khitanan</option>
+                                <option value="aqiqah">Aqiqah</option>
+                                <option value="multi">Multi Event (Pernikahan + Khitanan, dll)</option>
+                                <option value="other">Lainnya</option>
+                            </select>
                         </div>
-                        <h3 class="text-xl font-bold text-dark mb-3">Sistem RSVP & Buku Tamu</h3>
-                        <p class="text-slate-600">Kelola konfirmasi kehadiran tamu dan terima ucapan doa restu secara real-time dari dashboard Anda.</p>
-                    </div>
-                    <!-- Feature 3 -->
-                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 hover:shadow-xl hover:border-gold-300 transition-all group">
-                        <div class="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center text-gold-600 text-2xl mb-6 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-link"></i>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Custom Link (Slug URL)</label>
+                            <div class="flex items-center">
+                                <span class="bg-gray-100 border border-gray-300 border-r-0 px-3 py-2 rounded-l-lg text-sm text-gray-500">djangkosinvitation.com/</span>
+                                <input type="text" id="inv-slug" placeholder="ahmad-siti" required class="w-full px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-primary outline-none text-sm lowercase">
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Gunakan huruf kecil, angka, dan tanda hubung (-).</p>
                         </div>
-                        <h3 class="text-xl font-bold text-dark mb-3">Link Personal Tamu</h3>
-                        <p class="text-slate-600">Buat link khusus yang secara otomatis menyapa nama tamu undangan Anda. Terasa lebih sopan dan eksklusif.</p>
-                    </div>
+                        <div class="pt-4 flex justify-end gap-3">
+                            <button type="button" id="btn-cancel-modal" class="px-5 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition">Batal</button>
+                            <button type="submit" id="btn-submit-invitation" class="px-5 py-2 bg-primary text-white font-medium rounded-lg hover:bg-amber-700 transition shadow-sm">Simpan & Buat</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </section>
 
-        <!-- Theme Categories -->
-        <section class="py-20 bg-slate-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl font-serif font-bold text-dark mb-4">Satu Platform, Berbagai Kategori</h2>
-                    <p class="text-slate-600 max-w-2xl mx-auto">Pilih tema yang sesuai dengan jenis acara Anda. Editor kami akan menyesuaikan form isian secara otomatis.</p>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
-                        <i class="fas fa-ring text-3xl text-gold-500 mb-3"></i>
-                        <h4 class="font-semibold text-dark">Pernikahan</h4>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
-                        <i class="fas fa-child text-3xl text-gold-500 mb-3"></i>
-                        <h4 class="font-semibold text-dark">Khitanan</h4>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
-                        <i class="fas fa-baby text-3xl text-gold-500 mb-3"></i>
-                        <h4 class="font-semibold text-dark">Aqiqah</h4>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
-                        <i class="fas fa-birthday-cake text-3xl text-gold-500 mb-3"></i>
-                        <h4 class="font-semibold text-dark">Ulang Tahun</h4>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
-                        <i class="fas fa-praying-hands text-3xl text-gold-500 mb-3"></i>
-                        <h4 class="font-semibold text-dark">Tasyakuran</h4>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
-                        <i class="fas fa-graduation-cap text-3xl text-gold-500 mb-3"></i>
-                        <h4 class="font-semibold text-dark">Wisuda</h4>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
-                        <i class="fas fa-briefcase text-3xl text-gold-500 mb-3"></i>
-                        <h4 class="font-semibold text-dark">Acara Resmi</h4>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
-                        <i class="fas fa-plus text-3xl text-gold-500 mb-3"></i>
-                        <h4 class="font-semibold text-dark">Custom Event</h4>
-                    </div>
-                </div>
-            </div>
         </section>
-
-        <!-- Pricing Placeholder -->
-        <section id="pricing" class="py-20 bg-dark text-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="text-3xl font-serif font-bold mb-4">Mulai Secara Gratis</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto mb-10">Tingkatkan ke paket Premium atau Bisnis untuk fitur eksklusif tanpa batas.</p>
-                <button onclick="app.navigate('auth')" class="gold-bg-gradient text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all">Lihat Paket Harga</button>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="bg-white border-t border-slate-200 py-10">
-            <div class="max-w-7xl mx-auto px-4 text-center text-slate-500">
-                <p>&copy; 2026 DJANGKOS WEDDING. All rights reserved. The Modern SaaS Digital Invitation.</p>
-            </div>
-        </footer>
     </main>
 
-    <!-- VIEW: AUTHENTICATION -->
-    <main id="view-auth" class="spa-view bg-slate-50 flex-grow flex items-center justify-center py-20">
-        <div class="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
-            <div class="text-center mb-8">
-                <span class="font-serif text-3xl font-bold text-dark tracking-tight mb-2 block">INVIT<span class="text-gold-500">ARA</span></span>
-                <p class="text-slate-500 text-sm">Masuk ke dashboard untuk mengelola undangan Anda.</p>
-            </div>
-            
-            <form id="auth-form" onsubmit="event.preventDefault(); app.login();">
-                <div class="mb-5">
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
-                    <input type="email" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none transition-all" placeholder="nama@email.com">
-                </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Password</label>
-                    <input type="password" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none transition-all" placeholder="••••••••">
-                </div>
-                <button type="submit" class="w-full gold-bg-gradient text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-gold-500/30 transition-all mb-4">
-                    Masuk
-                </button>
-                <div class="relative flex items-center justify-center mb-4">
-                    <div class="border-t border-slate-200 w-full"></div>
-                    <span class="bg-white px-3 text-sm text-slate-400 absolute">atau</span>
-                </div>
-                <button type="button" onclick="app.login()" class="w-full bg-white border border-slate-300 text-slate-700 py-3 rounded-xl font-medium hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                    <i class="fab fa-google text-red-500"></i> Masuk dengan Google
-                </button>
-            </form>
-            <p class="text-center text-sm text-slate-500 mt-6">
-                Belum punya akun? <a href="#" class="text-gold-600 font-semibold hover:underline">Daftar Sekarang</a>
-            </p>
-            
-            <!-- Tahap 1 Note for testing -->
-            <div class="mt-6 p-3 bg-blue-50 text-blue-800 text-xs rounded-lg border border-blue-100 text-center">
-                <strong>Mode Tahap 1:</strong> Klik tombol masuk apa saja untuk langsung melihat tampilan Dashboard SaaS. (Firebase Auth akan diimplementasikan di Tahap 2).
-            </div>
-        </div>
-    </main>
-
-    <!-- VIEW: DASHBOARD (SaaS Layout) -->
-    <main id="view-dashboard" class="spa-view h-screen w-full bg-slate-50 flex overflow-hidden">
-        
-        <!-- Sidebar -->
-        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex z-20">
-            <div class="h-20 flex items-center px-6 border-b border-slate-100">
-                <span class="font-serif text-2xl font-bold text-dark tracking-tight">INVIT<span class="text-gold-500">ARA</span></span>
-            </div>
-            
-            <div class="p-4">
-                <button onclick="app.navigate('builder')" class="w-full gold-bg-gradient text-white py-2.5 rounded-lg font-medium flex items-center justify-center gap-2 hover:shadow-md transition-all">
-                    <i class="fas fa-plus"></i> Buat Undangan
-                </button>
-            </div>
-            
-            <nav class="flex-1 overflow-y-auto no-scrollbar py-2 px-3 space-y-1">
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 bg-amber-50 text-gold-600 rounded-lg font-medium">
-                    <i class="fas fa-chart-pie w-5 text-center"></i> Dashboard
-                </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-envelope-open-text w-5 text-center"></i> Undangan Saya
-                </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-palette w-5 text-center"></i> Galeri Tema
-                </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-address-book w-5 text-center"></i> Buku Tamu Global
-                </a>
-                
-                <div class="pt-4 pb-2">
-                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Bisnis & Setting</p>
-                </div>
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-credit-card w-5 text-center"></i> Tagihan & Paket
-                </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-cog w-5 text-center"></i> Pengaturan
-                </a>
-            </nav>
-            
-            <!-- User Menu -->
-            <div class="p-4 border-t border-slate-200">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold">
-                        A
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold text-dark">Admin User</p>
-                        <p class="text-xs text-gold-600 font-medium">Paket Premium</p>
-                    </div>
-                </div>
-                <button onclick="app.logout()" class="w-full text-left px-3 py-2 text-sm text-red-500 font-medium hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2">
-                    <i class="fas fa-sign-out-alt"></i> Keluar
-                </button>
-            </div>
-        </aside>
-
-        <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col h-screen overflow-hidden">
-            <!-- Topbar (Mobile mainly + Search) -->
-            <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-10">
-                <div class="flex items-center gap-4 md:hidden">
-                    <button class="text-slate-600"><i class="fas fa-bars text-xl"></i></button>
-                    <span class="font-serif text-xl font-bold">INVIT<span class="text-gold-500">ARA</span></span>
-                </div>
-                <div class="hidden md:flex items-center bg-slate-50 rounded-full px-4 py-2 border border-slate-200 w-96">
-                    <i class="fas fa-search text-slate-400 mr-2"></i>
-                    <input type="text" placeholder="Cari undangan atau tamu..." class="bg-transparent border-none outline-none text-sm w-full">
-                </div>
-                <div class="flex items-center gap-4">
-                    <button class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-600 flex items-center justify-center hover:text-gold-500 transition-colors relative">
-                        <i class="fas fa-bell"></i>
-                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
-                    </button>
-                </div>
-            </header>
-            
-            <!-- Dashboard Content -->
-            <main class="flex-1 overflow-y-auto p-6 md:p-8">
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <h1 class="text-2xl font-bold text-dark mb-1">Selamat Datang, Admin 👋</h1>
-                        <p class="text-slate-500 text-sm">Berikut adalah ringkasan akun DJANGKOS WEDDING Anda hari ini.</p>
-                    </div>
-                </div>
-                
-                <!-- Stats Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl"><i class="fas fa-envelope-open"></i></div>
-                            <span class="text-xs font-semibold text-green-500 bg-green-50 px-2 py-1 rounded-md">+2 Baru</span>
-                        </div>
-                        <p class="text-slate-500 text-sm font-medium mb-1">Total Undangan</p>
-                        <h3 class="text-3xl font-bold text-dark">5</h3>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-600 flex items-center justify-center text-xl"><i class="fas fa-eye"></i></div>
-                            <span class="text-xs font-semibold text-green-500 bg-green-50 px-2 py-1 rounded-md">+12%</span>
-                        </div>
-                        <p class="text-slate-500 text-sm font-medium mb-1">Total Views</p>
-                        <h3 class="text-3xl font-bold text-dark">1,240</h3>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl"><i class="fas fa-check-circle"></i></div>
-                        </div>
-                        <p class="text-slate-500 text-sm font-medium mb-1">Total RSVP Hadir</p>
-                        <h3 class="text-3xl font-bold text-dark">342</h3>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl"><i class="fas fa-book-open"></i></div>
-                        </div>
-                        <p class="text-slate-500 text-sm font-medium mb-1">Ucapan Buku Tamu</p>
-                        <h3 class="text-3xl font-bold text-dark">89</h3>
-                    </div>
-                </div>
-
-                <!-- Recent Invitations -->
-                <h2 class="text-lg font-bold text-dark mb-4">Undangan Terakhir</h2>
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 border-b border-slate-200">
-                                <th class="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Nama Undangan</th>
-                                <th class="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Status</th>
-                                <th class="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Tema</th>
-                                <th class="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Views</th>
-                                <th class="py-4 px-6 text-xs font-semibold text-slate-500 uppercase text-right">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <!-- Mock Data -->
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="py-4 px-6">
-                                    <p class="font-bold text-dark text-sm">Pernikahan & Khitanan Ahmad & Siti</p>
-                                    <p class="text-xs text-slate-500 mt-1">Multi Event • ahmad-siti</p>
-                                </td>
-                                <td class="py-4 px-6">
-                                    <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Published</span>
-                                </td>
-                                <td class="py-4 px-6 text-sm text-slate-600">Royal Gold Elegant</td>
-                                <td class="py-4 px-6 text-sm font-semibold text-dark">850</td>
-                                <td class="py-4 px-6 text-right">
-                                    <button class="text-slate-400 hover:text-gold-500 mx-1"><i class="fas fa-edit"></i></button>
-                                    <button class="text-slate-400 hover:text-blue-500 mx-1"><i class="fas fa-share-alt"></i></button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="py-4 px-6">
-                                    <p class="font-bold text-dark text-sm">Aqiqah Muhammad Fatih</p>
-                                    <p class="text-xs text-slate-500 mt-1">Aqiqah • aqiqah-fatih</p>
-                                </td>
-                                <td class="py-4 px-6">
-                                    <span class="px-2.5 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">Draft</span>
-                                </td>
-                                <td class="py-4 px-6 text-sm text-slate-600">Islamic Pastel</td>
-                                <td class="py-4 px-6 text-sm font-semibold text-dark">0</td>
-                                <td class="py-4 px-6 text-right">
-                                    <button class="text-slate-400 hover:text-gold-500 mx-1"><i class="fas fa-edit"></i></button>
-                                    <button class="text-slate-400 hover:text-blue-500 mx-1"><i class="fas fa-share-alt"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </main>
-        </div>
-    </main>
-
-    <!-- VIEW: INVITATION BUILDER WIZARD -->
-    <main id="view-builder" class="spa-view h-screen w-full bg-white flex flex-col overflow-hidden">
-        
-        <!-- Builder Header -->
-        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-10 flex-shrink-0">
-            <div class="flex items-center gap-4">
-                <button onclick="app.navigate('dashboard')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <div>
-                    <h2 class="font-bold text-dark text-sm">Buat Undangan Baru</h2>
-                    <p class="text-xs text-slate-500">Step 1 dari 4: Pilih Kategori</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <span class="text-xs font-medium text-slate-400 italic">Autosave: off</span>
-                <button class="bg-slate-100 text-slate-600 px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-slate-200 transition-colors">Simpan Draft</button>
-                <button class="gold-bg-gradient text-white px-4 py-1.5 rounded-lg text-sm font-medium shadow-sm hover:shadow-md transition-all">Lanjut <i class="fas fa-chevron-right text-xs ml-1"></i></button>
-            </div>
-        </header>
-
-        <!-- Builder Content (Step 1: Category) -->
-        <div class="flex-1 overflow-y-auto bg-slate-50 p-8">
-            <div class="max-w-4xl mx-auto">
-                <div class="text-center mb-10">
-                    <h1 class="text-3xl font-bold text-dark mb-2">Pilih Jenis Acara Utama</h1>
-                    <p class="text-slate-500">Anda tetap dapat menambahkan acara tambahan (Multi-Event) nanti di pengaturan.</p>
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <!-- Category Card -->
-                    <div class="bg-white p-6 rounded-2xl border-2 border-gold-500 shadow-md text-center cursor-pointer relative overflow-hidden group">
-                        <div class="absolute top-3 right-3 text-gold-500"><i class="fas fa-check-circle text-xl"></i></div>
-                        <div class="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gold-600 text-2xl group-hover:scale-110 transition-transform">
-                            <i class="fas fa-ring"></i>
-                        </div>
-                        <h3 class="font-bold text-dark">Pernikahan</h3>
-                        <p class="text-xs text-slate-500 mt-1">Akad & Resepsi</p>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-gold-300 text-center cursor-pointer transition-all group">
-                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-600 text-2xl group-hover:scale-110 transition-transform group-hover:bg-amber-50 group-hover:text-gold-600">
-                            <i class="fas fa-child"></i>
-                        </div>
-                        <h3 class="font-bold text-dark">Khitanan</h3>
-                        <p class="text-xs text-slate-500 mt-1">Tasyakuran Khitan</p>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-gold-300 text-center cursor-pointer transition-all group">
-                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-600 text-2xl group-hover:scale-110 transition-transform group-hover:bg-amber-50 group-hover:text-gold-600">
-                            <i class="fas fa-baby"></i>
-                        </div>
-                        <h3 class="font-bold text-dark">Aqiqah</h3>
-                        <p class="text-xs text-slate-500 mt-1">Kelahiran Anak</p>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-gold-300 text-center cursor-pointer transition-all group">
-                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-600 text-2xl group-hover:scale-110 transition-transform group-hover:bg-amber-50 group-hover:text-gold-600">
-                            <i class="fas fa-layer-group"></i>
-                        </div>
-                        <h3 class="font-bold text-dark">Custom Event</h3>
-                        <p class="text-xs text-slate-500 mt-1">Mulai dari awal</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Core Application Logic -->
+    <!-- LOGIC FIREBASE & APP -->
     <script type="module">
-        // Placeholder for Firebase Imports (To be used in TAHAP 2)
-        // import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        // import { getAuth, ... } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // import { getFirestore, ... } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        
+        // TAMBAHAN IMPORT UNTUK CRUD
+        import { 
+            getFirestore, doc, setDoc, getDoc, 
+            collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const App = {
-            state: {
-                currentRoute: 'home',
-                isAuthenticated: false,
-                user: null
-            },
-            
-            init() {
-                this.setupRouter();
-                this.handleRoute();
-                console.log("DJANGKOS WEDDING TAHAP 1 Initialized");
-            },
-
-            setupRouter() {
-                window.addEventListener('hashchange', () => this.handleRoute());
-            },
-
-            handleRoute() {
-                let hash = window.location.hash.substring(1);
-                if (!hash) hash = 'home';
-                
-                // Temporary Auth Guard simulation for Tahap 1
-                const protectedRoutes = ['dashboard', 'builder'];
-                if (protectedRoutes.includes(hash) && !this.state.isAuthenticated) {
-                    // For Demo Tahap 1, we let them pass if they clicked login
-                    // Normally we would redirect to 'auth'
-                }
-
-                this.navigate(hash, false);
-            },
-
-            navigate(route, changeHash = true) {
-                if (changeHash) {
-                    window.location.hash = route;
-                    return; // handleRoute will catch the hash change
-                }
-
-                // Hide all views
-                document.querySelectorAll('.spa-view').forEach(el => {
-                    el.classList.remove('active');
-                });
-
-                // Show target view
-                const targetView = document.getElementById(`view-${route}`);
-                if (targetView) {
-                    targetView.classList.add('active');
-                    this.state.currentRoute = route;
-                } else {
-                    document.getElementById('view-home').classList.add('active');
-                }
-
-                // Toggle Main Nav visibility
-                const mainNav = document.getElementById('main-nav');
-                if (route === 'dashboard' || route === 'builder') {
-                    mainNav.style.display = 'none';
-                } else {
-                    mainNav.style.display = 'block';
-                }
-            },
-
-            // Mock Auth Methods for Tahap 1
-            login() {
-                // Simulate login success
-                this.state.isAuthenticated = true;
-                this.state.user = { name: "Admin", email: "admin@DJANGKOS WEDDING.com" };
-                this.navigate('dashboard');
-            },
-
-            logout() {
-                this.state.isAuthenticated = false;
-                this.state.user = null;
-                this.navigate('home');
-            }
+        // ========================================================
+        // MASUKKAN KEMBALI KONFIGURASI FIREBASE ANDA DI SINI
+        // ========================================================
+        const firebaseConfig = {
+            apiKey: "GANTI_DENGAN_API_KEY_ANDA",
+            authDomain: "GANTI_DENGAN_AUTH_DOMAIN_ANDA",
+            projectId: "GANTI_DENGAN_PROJECT_ID_ANDA",
+            storageBucket: "GANTI_DENGAN_STORAGE_BUCKET_ANDA",
+            messagingSenderId: "GANTI_DENGAN_MESSAGING_SENDER_ID",
+            appId: "GANTI_DENGAN_APP_ID"
         };
 
-        // Expose to window for inline onclick handlers
-        window.app = App;
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let currentUser = null;
 
-        // Initialize when DOM is ready
-        document.addEventListener('DOMContentLoaded', () => App.init());
+        // --- ROUTING SPA ---
+        const appRouter = () => {
+            let hash = window.location.hash || '#home';
+            if (hash === '#dashboard' && !currentUser) { window.location.hash = '#login'; return; }
+            if ((hash === '#login' || hash === '#register') && currentUser) { window.location.hash = '#dashboard'; return; }
+
+            document.querySelectorAll('.spa-view').forEach(v => v.classList.remove('active'));
+            const targetView = document.querySelector(hash);
+            if (targetView) targetView.classList.add('active');
+            else { document.querySelector('#home').classList.add('active'); window.location.hash = '#home'; }
+
+            const publicNavbar = document.getElementById('public-navbar');
+            const appContainer = document.getElementById('app-container');
+            
+            if (['#dashboard', '#builder'].includes(hash)) {
+                publicNavbar.style.display = 'none'; appContainer.classList.remove('pt-16');
+            } else {
+                publicNavbar.style.display = 'block'; appContainer.classList.add('pt-16');
+            }
+            window.scrollTo(0, 0);
+        };
+
+        // --- AUTH STATE & FETCH DATA ---
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            if (user) {
+                document.getElementById('dash-username').innerText = user.displayName || user.email;
+                appRouter();
+                // Load data profil (seperti tahap 3)
+                const userDocRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(userDocRef);
+                if (!docSnap.exists()) {
+                    await setDoc(userDocRef, {
+                        uid: user.uid, email: user.email,
+                        displayName: user.displayName || 'Pengguna',
+                        subscription: { package: "free" },
+                        createdAt: serverTimestamp()
+                    });
+                }
+                
+                // Ambil daftar undangan dari database
+                fetchInvitations();
+            } else {
+                appRouter();
+            }
+        });
+        window.addEventListener('hashchange', appRouter);
+
+        // --- CRUD UNDANGAN ---
+        const invGrid = document.getElementById('invitation-grid');
+        const emptyState = document.getElementById('empty-state');
+        const loadingState = document.getElementById('loading-invitations');
+
+        // READ: Mengambil data undangan user login
+        async function fetchInvitations() {
+            if (!currentUser) return;
+            loadingState.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            invGrid.classList.add('hidden');
+            invGrid.innerHTML = ''; // Bersihkan grid
+
+            try {
+                // Query: Ambil koleksi "invitations" di mana userId = id pengguna saat ini
+                const q = query(collection(db, "invitations"), where("userId", "==", currentUser.uid));
+                const querySnapshot = await getDocs(q);
+                
+                loadingState.classList.add('hidden');
+
+                if (querySnapshot.empty) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    invGrid.classList.remove('hidden');
+                    querySnapshot.forEach((docSnap) => {
+                        const data = docSnap.data();
+                        renderInvitationCard(docSnap.id, data);
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                loadingState.classList.add('hidden');
+                alert("Gagal memuat data undangan.");
+            }
+        }
+
+        // RENDER: Membuat tampilan kartu undangan di HTML
+        function renderInvitationCard(id, data) {
+            const card = document.createElement('div');
+            card.className = "bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition";
+            
+            // Format Status
+            let statusBadge = data.status === 'draft' ? `<span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold">DRAFT</span>` 
+                            : `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">PUBLISHED</span>`;
+
+            card.innerHTML = `
+                <div class="h-32 bg-gray-100 flex items-center justify-center relative">
+                    <span class="text-gray-400 text-sm">No Cover</span>
+                    <div class="absolute top-3 right-3">${statusBadge}</div>
+                </div>
+                <div class="p-5">
+                    <p class="text-xs text-primary font-bold uppercase tracking-wider mb-1">${data.categoryId}</p>
+                    <h3 class="text-lg font-bold text-dark mb-1 truncate">${data.title}</h3>
+                    <a href="https://djangkosinvitation.com/${data.slug}" target="_blank" class="text-sm text-blue-500 hover:underline block mb-4 truncate">/${data.slug}</a>
+                    
+                    <div class="flex gap-2 border-t border-gray-100 pt-4 mt-2">
+                        <button class="flex-1 bg-amber-50 text-primary py-2 rounded-lg text-sm font-semibold hover:bg-amber-100 transition" onclick="alert('Fitur Builder akan dibangun di Tahap 7')">Edit</button>
+                        <button class="bg-red-50 text-red-500 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-500 hover:text-white transition" onclick="deleteInvitation('${id}')">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+            invGrid.appendChild(card);
+        }
+
+        // CREATE: Logic Submit Form Buat Undangan
+        document.getElementById('form-create-invitation').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = document.getElementById('btn-submit-invitation');
+            const title = document.getElementById('inv-title').value;
+            const categoryId = document.getElementById('inv-category').value;
+            const slug = document.getElementById('inv-slug').value.toLowerCase().replace(/[^a-z0-9-]/g, ''); // bersihkan slug
+
+            if (!slug) { alert("Slug tidak valid."); return; }
+            if (!currentUser) return;
+
+            btnSubmit.innerHTML = "Menyimpan...";
+            btnSubmit.disabled = true;
+
+            try {
+                // Simpan ke Firestore koleksi "invitations"
+                await addDoc(collection(db, "invitations"), {
+                    userId: currentUser.uid,
+                    title: title,
+                    categoryId: categoryId,
+                    slug: slug,
+                    status: 'draft',
+                    createdAt: serverTimestamp(),
+                    themeId: null // Tema akan dipilih nanti di Tahap Builder
+                });
+
+                // Tutup modal, reset form, dan muat ulang data
+                closeModal();
+                document.getElementById('form-create-invitation').reset();
+                fetchInvitations();
+            } catch (error) {
+                console.error("Error menambah dokumen: ", error);
+                alert("Gagal membuat undangan.");
+            } finally {
+                btnSubmit.innerHTML = "Simpan & Buat";
+                btnSubmit.disabled = false;
+            }
+        });
+
+        // DELETE: Fungsi Hapus Undangan (Global Access)
+        window.deleteInvitation = async function(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus undangan ini secara permanen?")) {
+                try {
+                    await deleteDoc(doc(db, "invitations", id));
+                    fetchInvitations(); // Refresh list
+                } catch (error) {
+                    console.error("Error deleting document: ", error);
+                    alert("Gagal menghapus undangan.");
+                }
+            }
+        }
+
+        // --- MODAL LOGIC & AUTO SLUG ---
+        const modal = document.getElementById('modal-create');
+        const titleInput = document.getElementById('inv-title');
+        const slugInput = document.getElementById('inv-slug');
+
+        function openModal() { modal.classList.add('active'); }
+        function closeModal() { modal.classList.remove('active'); }
+
+        document.getElementById('btn-open-modal').addEventListener('click', openModal);
+        document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+        document.getElementById('btn-cancel-modal').addEventListener('click', closeModal);
+
+        // Auto-generate slug saat mengetik Judul
+        titleInput.addEventListener('input', function() {
+            let val = this.value.toLowerCase();
+            // Ganti spasi & "&" menjadi "-", hapus karakter non-alphanumeric lainnya
+            slugInput.value = val.replace(/\s+/g, '-').replace(/&/g, 'dan').replace(/[^a-z0-9-]/g, '');
+        });
+
+        // --- AUTH BASIC LOGIN/LOGOUT ---
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            try { await signInWithEmailAndPassword(auth, email, password); } 
+            catch (error) { alert("Login gagal."); }
+        });
+        document.getElementById('btn-logout').addEventListener('click', async () => {
+            await signOut(auth);
+            window.location.hash = '#home';
+        });
+
     </script>
 </body>
 </html>
