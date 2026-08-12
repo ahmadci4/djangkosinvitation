@@ -3,679 +3,583 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Pernikahan Powan & Nopisari - Konter Cinta</title>
+    <title>INVITARA - Platform Undangan Digital Multi-Event</title>
+    <meta name="description" content="Buat undangan digital profesional untuk Wedding, Khitanan, Aqiqah, dan berbagai acara dalam satu platform.">
     
-    <!-- Google Fonts -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome Icons -->
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Canvas Confetti -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-    <!-- Tailwind CSS (CDN) -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        konter: {
-                            blue: '#0ea5e9',    // Biru terang khas provider
-                            dark: '#0f172a',    // Background layar gelap
-                            yellow: '#facc15',  // Kuning konter pulsa
-                            green: '#22c55e',   // Hijau transaksi sukses
-                            red: '#ef4444',     // Merah notif/kuota habis
-                            white: '#f8fafc',
-                            gray: '#334155'
-                        }
-                    },
                     fontFamily: {
-                        digital: ['"Orbitron"', 'sans-serif'],
-                        mono: ['"Space Mono"', 'monospace'],
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        gold: {
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        },
+                        dark: '#111827'
                     }
                 }
             }
         }
     </script>
-
     <style>
-        body.locked { overflow: hidden; }
-        body { background-color: #0f172a; color: #f8fafc; }
+        /* Custom CSS & Animations */
+        .spa-view { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+        .spa-view.active { display: block; opacity: 1; }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 10px; }
-
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #facc15; border-radius: 4px; }
-
-        /* Neon Borders & Effects */
-        .neon-border-blue {
-            box-shadow: 0 0 10px rgba(14, 165, 233, 0.5), inset 0 0 10px rgba(14, 165, 233, 0.2);
-            border: 1px solid #0ea5e9;
+        .gold-gradient {
+            background: linear-gradient(135deg, #FBBF24 0%, #D97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .neon-border-yellow {
-            box-shadow: 0 0 15px rgba(250, 204, 21, 0.5);
-            border: 2px solid #facc15;
-        }
-        .neon-text-blue {
-            text-shadow: 0 0 5px #0ea5e9, 0 0 15px #0ea5e9;
+        
+        .gold-bg-gradient {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
         }
 
-        /* Signal Bar Animation */
-        .signal-bar { animation: blink 1.5s infinite alternate; }
-        .signal-bar:nth-child(1) { animation-delay: 0.1s; }
-        .signal-bar:nth-child(2) { animation-delay: 0.2s; }
-        .signal-bar:nth-child(3) { animation-delay: 0.3s; }
-        .signal-bar:nth-child(4) { animation-delay: 0.4s; }
-        @keyframes blink { 0% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        /* Animasi Scroll */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Tech Pattern Background */
-        .bg-tech-pattern {
-            background-image: radial-gradient(rgba(14, 165, 233, 0.15) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
-        /* Receipt Style */
-        .receipt-edge {
-            background-image: radial-gradient(circle at 10px 0, transparent 10px, #ffffff 11px);
-            background-size: 20px 20px;
-            background-repeat: repeat-x;
-        }
+        /* Hide scrollbar for sidebar but keep functionality */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="font-sans antialiased selection:bg-konter-yellow selection:text-black bg-tech-pattern locked relative" id="body-container">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans">
 
-    <!-- Audio Player -->
-    <!-- Audio Player -->
-    <audio id="bg-music" loop>
-        <source src="music.mp3" type="audio/mpeg">
-    </audio>
+    <!-- MAIN NAVIGATION (Visible on Landing & Auth, hidden on Dashboard/Builder) -->
+    <nav id="main-nav" class="fixed w-full bg-white/90 backdrop-blur-md z-50 border-b border-slate-200 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="app.navigate('home')">
+                    <span class="font-serif text-2xl font-bold text-dark tracking-tight">INVIT<span class="text-gold-500">ARA</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#features" class="text-slate-600 hover:text-gold-500 font-medium transition-colors">Fitur</a>
+                    <a href="#themes" class="text-slate-600 hover:text-gold-500 font-medium transition-colors">Tema</a>
+                    <a href="#pricing" class="text-slate-600 hover:text-gold-500 font-medium transition-colors">Harga</a>
+                    <div class="border-l border-slate-300 h-6 mx-2"></div>
+                    <button onclick="app.navigate('auth')" class="text-slate-800 font-medium hover:text-gold-600 transition-colors">Masuk</button>
+                    <button onclick="app.navigate('auth')" class="gold-bg-gradient text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg hover:shadow-gold-500/30 transition-all transform hover:-translate-y-0.5">Buat Undangan</button>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-slate-600 hover:text-slate-900 focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Tombol Floating Musik (Ikon Nada Dering) -->
-    <button id="music-btn" onclick="toggleMusic()" class="fixed top-6 right-6 z-50 bg-konter-dark/90 backdrop-blur shadow-[0_0_15px_rgba(14,165,233,0.5)] w-12 h-12 flex items-center justify-center rounded-full text-konter-blue hover:scale-110 transition-transform hidden border border-konter-blue">
-        <i id="music-icon" class="fa-solid fa-volume-high"></i>
-    </button>
-
-    <!-- Navigasi Bawah (Menu Konter) -->
-    <div id="bottom-nav" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-konter-dark/95 backdrop-blur-md px-6 py-3 rounded-full neon-border-blue flex gap-6 hidden transition-all duration-700 opacity-0 translate-y-10">
-        <a href="#home" class="text-konter-white hover:text-konter-yellow transition-colors text-xl" title="Beranda"><i class="fa-solid fa-house"></i></a>
-        <a href="#couple" class="text-konter-white hover:text-konter-yellow transition-colors text-xl" title="Provider"><i class="fa-solid fa-sim-card"></i></a>
-        <a href="#event" class="text-konter-white hover:text-konter-yellow transition-colors text-xl" title="Jadwal"><i class="fa-solid fa-calendar-check"></i></a>
-        <a href="#gallery" class="text-konter-white hover:text-konter-yellow transition-colors text-xl" title="Galeri"><i class="fa-solid fa-mobile-screen"></i></a>
-        <a href="#rsvp" class="text-konter-white hover:text-konter-yellow transition-colors text-xl" title="Layanan"><i class="fa-solid fa-headset"></i></a>
-    </div>
-
-    <!-- ==================== COVER PAGE ==================== -->
-    <div id="cover-page" class="fixed inset-0 z-[60] flex flex-col items-center justify-center transition-transform duration-1000 ease-in-out bg-konter-dark bg-tech-pattern relative overflow-hidden">
+    <!-- VIEW: HOME (LANDING PAGE) -->
+    <main id="view-home" class="spa-view active flex-grow">
         
-        <!-- Signal Indicator Top Right -->
-        <div class="absolute top-6 right-6 flex items-end gap-1 text-konter-blue">
-            <span class="text-xs font-mono mr-2">4G LTE</span>
-            <div class="w-1.5 h-2 bg-konter-blue rounded-t-sm signal-bar"></div>
-            <div class="w-1.5 h-3 bg-konter-blue rounded-t-sm signal-bar"></div>
-            <div class="w-1.5 h-4 bg-konter-blue rounded-t-sm signal-bar"></div>
-            <div class="w-1.5 h-5 bg-konter-blue rounded-t-sm signal-bar"></div>
-        </div>
-        <div class="absolute top-6 left-6 text-konter-yellow font-mono text-sm">
-            <i class="fa-solid fa-battery-full"></i> 100%
-        </div>
-
-        <div class="z-10 text-center px-6 max-w-lg w-full relative">
-            <i class="fa-solid fa-tower-broadcast text-konter-yellow text-5xl mb-6 animate-pulse"></i>
-            
-            <p class="text-xs font-mono tracking-[0.3em] uppercase mb-4 text-konter-blue font-bold">Pusat Isi Ulang Cinta & Kebahagiaan</p>
-            <h1 class="text-5xl md:text-6xl font-digital mb-2 text-white neon-text-blue">Powan</h1>
-            <p class="text-2xl text-konter-yellow font-digital my-2">&</p>
-            <h1 class="text-5xl md:text-6xl font-digital mb-8 text-white neon-text-blue">NOPISARI</h1>
-            
-            <div class="bg-konter-gray/30 backdrop-blur-md rounded-2xl p-6 neon-border-blue mt-8">
-                <p class="text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Notifikasi Pesan Baru Untuk:</p>
-                <p id="guest-name" class="text-xl font-bold font-sans text-konter-yellow border-b border-konter-yellow/50 pb-2 inline-block px-4">Pelanggan Setia</p>
-                
-                <button onclick="openInvitation()" class="mt-8 px-8 py-4 bg-konter-blue hover:bg-blue-600 text-white rounded-full transition-all duration-300 flex items-center justify-center mx-auto text-sm tracking-widest font-bold shadow-[0_0_20px_rgba(14,165,233,0.5)] hover:scale-105 w-full">
-                    <i class="fa-solid fa-unlock-keyhole mr-3"></i> UNREG MASA LAJANG
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== MAIN CONTENT ==================== -->
-    <div id="main-content" class="relative opacity-0 transition-opacity duration-1000 ease-in-out hidden pb-24 pt-12">
-        
-        <!-- 1. OPENING QUOTE -->
-        <section id="home" class="py-16 px-6 text-center max-w-3xl mx-auto relative reveal">
-            <div class="bg-konter-blue/10 neon-border-blue p-8 rounded-3xl relative">
-                <i class="fa-solid fa-comment-sms absolute -top-5 left-1/2 -translate-x-1/2 text-4xl text-konter-yellow bg-konter-dark px-4"></i>
-                
-                <p class="text-sm md:text-base font-mono leading-relaxed text-gray-300 mt-4 text-left">
-                    > Dulu, setiap kali bertemu, selalu ada satu notifikasi pesan yang setia menemani:<br><br>
-                    <span class="text-konter-yellow font-bold text-lg">"Kapan nikah?"</span><br><br>
-                    > Kami hanya bisa tersenyum...<br>kadang sambil pura-pura sibuk ngecek hape, kadang sambil nawarin pulsa 😄<br><br>
-                    > Sampai akhirnya kami sadar, mungkin ini bukan sekadar pertanyaan…<br>tapi juga doa yang diam-diam dipanjatkan.<br><br>
-                    > Dan hari ini, di bawah sinyal jaringan yang sama dan penuh kebahagiaan, kami punya balasannya:<br><br>
-                    <span class="text-konter-green font-bold text-xl text-center block w-full">"IYA, KAMI AKAN MENIKAH." 💍</span><br>
-                    > Dengan penuh cinta, kami mengundang Anda untuk hadir dan menjadi bagian dari aktivasi paket seumur hidup kami.
-                </p>
-            </div>
-        </section>
-
-        <!-- 2. COUPLE PROFILE SECTION -->
-        <section id="couple" class="py-16 px-6 reveal">
-            <div class="max-w-4xl mx-auto">
-                <div class="text-center mb-16 relative">
-                    <h2 class="font-digital text-4xl md:text-5xl text-konter-yellow mb-2 neon-text-blue">PROVIDER UTAMA</h2>
-                    <p class="text-konter-blue font-mono tracking-widest text-xs uppercase">Dua Jaringan Menjadi Satu Koneksi</p>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-16 text-center">
-                    <!-- Groom -->
-                    <div class="relative group bg-konter-gray/20 p-8 rounded-[2rem] neon-border-blue">
-                        <div class="absolute top-4 left-4 text-konter-green text-sm font-mono"><i class="fa-solid fa-wifi"></i> Connected</div>
-                        
-                        <div class="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-konter-blue shadow-[0_0_20px_rgba(14,165,233,0.3)] relative z-10 p-1">
-                            <img src="images/poan.png" alt="Powan" class="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-700"/>
-                        </div>
-                        <h3 class="text-3xl font-digital text-white mb-2">Powan</h3>
-                        <p class="text-gray-400 text-xs mb-4 font-mono uppercase">Pemilik Saldo Utama</p>
-                        <a href="#" class="inline-block px-4 py-2 bg-konter-blue/20 border border-konter-blue rounded-full text-xs font-bold text-konter-blue hover:bg-konter-blue hover:text-white transition-all"><i class="fa-brands fa-instagram mr-1"></i> @Powanhadi</a>
+        <!-- Hero Section -->
+        <section class="pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div class="text-center max-w-4xl mx-auto">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 text-amber-800 font-medium text-sm mb-6">
+                        <i class="fas fa-star text-gold-500"></i> Platform SaaS Undangan Digital Generasi Baru
                     </div>
-
-                    <!-- Bride -->
-                    <div class="relative group bg-konter-gray/20 p-8 rounded-[2rem] neon-border-blue">
-                        <div class="absolute top-4 right-4 text-konter-green text-sm font-mono">Connected <i class="fa-solid fa-wifi"></i></div>
-
-                        <div class="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-konter-yellow shadow-[0_0_20px_rgba(250,204,21,0.3)] relative z-10 p-1">
-                            <img src="images/nopisari.png" alt="Nopisari" class="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-700"/>
-                        </div>
-                        <h3 class="text-3xl font-digital text-white mb-2">Nopisari</h3>
-                        <p class="text-gray-400 text-xs mb-4 font-mono uppercase">Penerima Kuota Hati</p>
-                        <a href="#" class="inline-block px-4 py-2 bg-konter-yellow/20 border border-konter-yellow rounded-full text-xs font-bold text-konter-yellow hover:bg-konter-yellow hover:text-black transition-all"><i class="fa-brands fa-instagram mr-1"></i> @nopisari</a>
+                    <h1 class="text-4xl md:text-6xl font-serif font-bold text-dark leading-tight mb-6">
+                        Buat Undangan Digital yang <span class="gold-gradient">Berkesan & Tak Terbatas</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-600 mb-10 leading-relaxed">
+                        Wedding, Khitanan, Aqiqah, Tasyakuran, dan berbagai acara lainnya dalam satu platform. Gabungkan beberapa acara dalam satu undangan dengan mudah.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="app.navigate('auth')" class="gold-bg-gradient text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-xl hover:shadow-gold-500/40 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                            Buat Undangan Gratis <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button class="bg-white text-slate-800 border-2 border-slate-200 px-8 py-4 rounded-full font-semibold text-lg hover:border-gold-500 hover:text-gold-600 transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-layer-group"></i> Jelajahi Tema
+                        </button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 3. COUNTDOWN -->
-        <section class="py-20 px-6 relative overflow-hidden reveal">
-            <div class="max-w-4xl mx-auto text-center relative z-10">
-                <p class="font-mono text-xs text-konter-blue mb-2 tracking-widest uppercase"><i class="fa-solid fa-hourglass-half mr-2"></i>Masa Aktif Lajang Berakhir Dalam:</p>
-                <h2 class="font-digital text-4xl text-konter-yellow mb-10">COUNTDOWN TRANSAKSI</h2>
-                
-                <div class="flex flex-wrap justify-center gap-4 md:gap-6">
-                    <div class="w-20 h-24 md:w-28 md:h-32 bg-konter-gray/50 text-white flex flex-col justify-center items-center rounded-xl border border-konter-blue shadow-[0_0_15px_rgba(14,165,233,0.2)]">
-                        <span id="cd-days" class="text-3xl md:text-5xl font-digital font-bold text-konter-blue">00</span>
-                        <span class="text-[10px] font-mono mt-2 text-gray-400 uppercase">Hari</span>
-                    </div>
-                    <div class="w-20 h-24 md:w-28 md:h-32 bg-konter-gray/50 text-white flex flex-col justify-center items-center rounded-xl border border-konter-blue shadow-[0_0_15px_rgba(14,165,233,0.2)]">
-                        <span id="cd-hours" class="text-3xl md:text-5xl font-digital font-bold text-konter-blue">00</span>
-                        <span class="text-[10px] font-mono mt-2 text-gray-400 uppercase">Jam</span>
-                    </div>
-                    <div class="w-20 h-24 md:w-28 md:h-32 bg-konter-gray/50 text-white flex flex-col justify-center items-center rounded-xl border border-konter-yellow shadow-[0_0_15px_rgba(250,204,21,0.2)]">
-                        <span id="cd-minutes" class="text-3xl md:text-5xl font-digital font-bold text-konter-yellow">00</span>
-                        <span class="text-[10px] font-mono mt-2 text-gray-400 uppercase">Menit</span>
-                    </div>
-                    <div class="w-20 h-24 md:w-28 md:h-32 bg-konter-gray/50 text-white flex flex-col justify-center items-center rounded-xl border border-konter-red shadow-[0_0_15px_rgba(239,68,68,0.2)]">
-                        <span id="cd-seconds" class="text-3xl md:text-5xl font-digital font-bold text-konter-red">00</span>
-                        <span class="text-[10px] font-mono mt-2 text-gray-400 uppercase">Detik</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. LOVE STORY -->
-        <section class="py-24 px-6 relative reveal bg-konter-gray/10">
-            <div class="max-w-3xl mx-auto">
+        <!-- Features Section -->
+        <section id="features" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <p class="text-konter-blue font-mono tracking-widest text-xs font-bold uppercase mb-2"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Log Aktivitas</p>
-                    <h2 class="font-digital text-4xl text-konter-yellow">RIWAYAT TRANSAKSI CINTA</h2>
+                    <h2 class="text-3xl font-serif font-bold text-dark mb-4">Fitur Utama Invitara</h2>
+                    <p class="text-slate-600 max-w-2xl mx-auto">Bukan sekadar undangan biasa. Sistem kami dirancang untuk fleksibilitas maksimal sesuai kebutuhan acara Anda.</p>
                 </div>
-
-                <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-konter-gray">
-                    
-                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group reveal">
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-konter-blue text-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(14,165,233,0.8)] z-10">
-                            <i class="fa-solid fa-address-card text-sm"></i>
-                        </div>
-                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-konter-gray/40 border border-konter-blue/50 p-6 rounded-xl relative">
-                            <span class="text-konter-blue font-mono font-bold text-xs tracking-widest uppercase">11 JANUARI 2024 - Registrasi Perdana</span>
-                            <p class="text-gray-300 mt-2 text-sm">Niat awal cari partner kerjasama mau ngembangin konter, eh gak nyangka bakal include jodoh sekaligus karyawan </p>
-                        </div>
-                    </div>
-
-                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group reveal">
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-konter-yellow text-black shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(250,204,21,0.8)] z-10">
-                            <i class="fa-solid fa-mobile-retro text-sm"></i>
-                        </div>
-                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-konter-gray/40 border border-konter-yellow/50 p-6 rounded-xl relative">
-                            <span class="text-konter-yellow font-mono font-bold text-xs tracking-widest uppercase">2 desember 2025 - Top Up Pertama</span>
-                            <p class="text-gray-300 mt-2 text-sm">Niat mau transaksi dompet pulsa di elbisi, eh malah keterusan jalan sampai tiu kelep, pas di tangga turun ke air terjun "dia-nya malah terpeleset dan aku nangkep dia dalam tayangan lambat 15 detik sambil muncul lagu romantis "ayaya manjani buka kutay" ternyata ada bocil lewat. pokoknya hari itu jadian. (titik).</p>
-                        </div>
-                    </div>
-
-                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group reveal">
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-konter-green text-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(34,197,94,0.8)] z-10">
-                            <i class="fa-solid fa-ring text-sm"></i>
-                        </div>
-                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-konter-gray/40 border border-konter-green/50 p-6 rounded-xl relative">
-                            <span class="text-konter-green font-mono font-bold text-xs tracking-widest uppercase">26 maret 2026 - Upgrade ke 4G/5G</span>
-                            <p class="text-gray-300 mt-2 text-sm">GW : yang nikah yuk ...</p>
-                            <p class="text-gray-300 mt-2 text-sm">DIA : Iya ...</p>
-                            <p class="text-gray-300 mt-2 text-sm">udah gitu doang</p>
-                        </div>
-                    </div>
-
-                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group reveal">
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-konter-red text-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_15px_rgba(239,68,68,0.8)] z-10">
-                            <i class="fa-solid fa-check-double text-sm"></i>
-                        </div>
-                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-3rem)] bg-konter-gray/40 border border-konter-red/50 p-6 rounded-xl relative">
-                            <span class="text-konter-red font-mono font-bold text-xs tracking-widest uppercase">24 april 2026 - Paket Unlimited Aktif</span>
-                            <p class="text-gray-300 mt-2 text-sm">DIA : yang jam berapa kamu ambil aku, jadi apa ngak kita nikah</p>
-                            <p class="text-gray-300 mt-2 text-sm">GW : masi di kamar lagi misahin :", ini biaya prasmanan, biaya dekor, fotografer, biaya makan, dan ini Biaya anak sekolah-sampai kuliah, </p>
-                        <span class="text-konter-red font-mono font-bold text-xs tracking-widest uppercase">OKE GAAAAASSSSS</span>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- 5. EVENT DETAILS -->
-       <!-- 5. EVENT DETAILS -->
-        <section id="event" class="py-20 px-6 reveal">
-            <div class="max-w-4xl mx-auto text-center">
-                <p class="font-digital text-4xl text-konter-yellow mb-12">LOKASI JARINGAN UTAMA</p>
-
-                <div class="grid md:grid-cols-2 gap-8 mb-10">
-                    <!-- AKAD -->
-                    <div class="bg-konter-gray/30 p-8 rounded-2xl border border-konter-blue text-left relative overflow-hidden hover:-translate-y-2 transition-transform">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-konter-blue"></div>
-                        <div class="flex justify-between items-start mb-6 border-b border-konter-gray pb-4">
-                            <div>
-                                <h3 class="text-xl font-bold font-digital text-konter-blue tracking-widest">AKAD NIKAH</h3>
-                                <p class="text-gray-400 font-mono text-xs mt-1">Status: Pending <i class="fa-solid fa-spinner animate-spin ml-1"></i></p>
-                            </div>
-                            <i class="fa-solid fa-file-signature text-3xl text-konter-blue opacity-50"></i>
-                        </div>
-                        
-                        <div class="space-y-4 font-mono text-sm text-gray-300">
-                            <p class="flex items-center"><i class="fa-solid fa-calendar-days w-6 text-konter-yellow"></i> 03 Mei 2026</p>
-                            <p class="flex items-center"><i class="fa-solid fa-clock w-6 text-konter-yellow"></i> 10:00 WITA - Selesai</p>
-                            <p class="flex items-start"><i class="fa-solid fa-location-dot w-6 text-konter-yellow mt-1"></i> <span>Pasar Ancak Lama<br/><span class="text-xs text-gray-500">Nusa Tenggara Barat</span></span></p>
-                        </div>
-                    </div>
-
-                    <!-- RESEPSI -->
-                    <div class="bg-konter-gray/30 p-8 rounded-2xl border border-konter-green text-left relative overflow-hidden hover:-translate-y-2 transition-transform">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-konter-green"></div>
-                        <div class="flex justify-between items-start mb-6 border-b border-konter-gray pb-4">
-                            <div>
-                                <h3 class="text-xl font-bold font-digital text-konter-green tracking-widest">RESEPSI</h3>
-                                <p class="text-gray-400 font-mono text-xs mt-1">Status: Scheduled <i class="fa-solid fa-calendar-check ml-1"></i></p>
-                            </div>
-                            <i class="fa-solid fa-champagne-glasses text-3xl text-konter-green opacity-50"></i>
-                        </div>
-                        
-                        <div class="space-y-4 font-mono text-sm text-gray-300">
-                            <p class="flex items-center"><i class="fa-solid fa-calendar-days w-6 text-konter-yellow"></i> 03 Mei 2026</p>
-                            <p class="flex items-center"><i class="fa-solid fa-clock w-6 text-konter-yellow"></i> 12:30 WIB - Selesai</p>
-                            <p class="flex items-start"><i class="fa-solid fa-location-dot w-6 text-konter-yellow mt-1"></i> <span>Pasar Ancak Lama<br/><span class="text-xs text-gray-500">Nusa Tenggara Barat</span></span></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 6. MAPS -->
-                <div class="bg-konter-gray/50 p-4 rounded-3xl neon-border-blue max-w-3xl mx-auto reveal mt-12">
-                    <div class="bg-konter-dark p-4 rounded-2xl border border-konter-gray">
-                        <p class="font-mono font-bold text-white text-sm mb-4 text-left border-b border-konter-gray pb-2"><i class="fa-solid fa-satellite-dish text-konter-blue mr-2 animate-pulse"></i> MELACAK KOORDINAT: PASAR ANCAK LAMA...</p>
-                        
-                        <!-- Embed Maps (Sesuai Titik Koordinat) -->
-                        <iframe src="https://maps.google.com/maps?q=-8.260046,116.426774&t=&z=18&ie=UTF8&iwloc=&output=embed" width="100%" height="300" style="border:0; border-radius: 8px; filter: invert(90%) hue-rotate(180deg);" allowfullscreen="" loading="lazy"></iframe>
-                        
-                        <!-- Tombol Buka Google Maps menggunakan URL dari user -->
-                        <a href="https://www.google.com/maps/place//@-8.2599418,116.426575,21z/data=!4m11!1m5!3m4!2zOMKwMTUnMzYuMiJTIDExNsKwMjUnMzYuNCJF!8m2!3d-8.260046!4d116.426774!3m4!1s0x0:0x8580a8fe8a621abb!8m2!3d-8.2600473!4d116.4267728?entry=ttu&g_ep=EgoyMDI2MDQyNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="block w-full mt-4 py-3 bg-konter-blue text-white font-bold font-mono text-sm rounded-lg hover:bg-blue-600 transition-colors shadow-[0_0_10px_rgba(14,165,233,0.5)]">
-                            <i class="fa-solid fa-location-arrow mr-2"></i> BUKA APLIKASI MAPS
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- 7. GALLERY (Tangkapan Layar) -->
-        <section id="gallery" class="py-20 px-6 relative reveal">
-            <div class="max-w-5xl mx-auto text-center relative z-10">
-                <p class="font-digital text-4xl text-konter-yellow mb-2 neon-text-blue">GALERI TANGKAPAN LAYAR</p>
-                <p class="text-gray-400 font-mono text-xs mb-12 uppercase">Folder: /Pictures/Kenangan_Berdua</p>
-
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 px-4">
-                    <div class="relative group rounded-xl overflow-hidden border-2 border-konter-gray hover:border-konter-blue transition-colors reveal">
-                        <div class="absolute top-2 left-2 bg-black/60 px-2 rounded font-mono text-[8px] text-white z-10 border border-white/20">IMG_001.JPG</div>
-                        <img src="images/bg-cover.jpg" alt="Galeri 1" class="w-full aspect-square object-cover transform group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="relative group rounded-xl overflow-hidden border-2 border-konter-gray hover:border-konter-blue transition-colors reveal" style="transition-delay: 100ms;">
-                        <div class="absolute top-2 left-2 bg-black/60 px-2 rounded font-mono text-[8px] text-white z-10 border border-white/20">IMG_002.JPG</div>
-                        <img src="images/foto7.jpeg" alt="Galeri 2" class="w-full aspect-square object-cover transform group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="relative group rounded-xl overflow-hidden border-2 border-konter-gray hover:border-konter-blue transition-colors reveal" style="transition-delay: 200ms;">
-                        <div class="absolute top-2 left-2 bg-black/60 px-2 rounded font-mono text-[8px] text-white z-10 border border-white/20">IMG_003.JPG</div>
-                        <img src="images/foto8.jpeg" alt="Galeri 3" class="w-full aspect-square object-cover transform group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="relative group rounded-xl overflow-hidden border-2 border-konter-gray hover:border-konter-blue transition-colors reveal" style="transition-delay: 300ms;">
-                        <div class="absolute top-2 left-2 bg-black/60 px-2 rounded font-mono text-[8px] text-white z-10 border border-white/20">IMG_004.JPG</div>
-                        <img src="images/foto9.jpeg" alt="Galeri 4" class="w-full aspect-square object-cover transform group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 8. GIFT (Transfer Pulsa) -->
-        <section class="py-20 px-6 reveal">
-            <div class="max-w-2xl mx-auto text-center">
-                <div class="bg-white text-black p-8 md:p-10 rounded-xl relative overflow-hidden receipt-edge font-mono">
-                    
-                    <div class="text-center mb-6 border-b-2 border-dashed border-gray-300 pb-6">
-                        <i class="fa-solid fa-store text-4xl mb-2 text-black"></i>
-                        <h2 class="font-bold text-2xl uppercase tracking-widest">Struk Transfer</h2>
-                        <p class="text-xs text-gray-500">No. Transaksi: #05032026</p>
-                    </div>
-
-                    <p class="text-sm font-medium mb-6 leading-relaxed">Kehadiran & doa Anda adalah top-up terbaik. Namun jika Anda ingin melakukan transfer *cashless* sebagai kado, dapat dikirimkan ke nomor rekening di bawah ini:</p>
-                    <!-- BRI -->
-                    <div class="bg-gray-100 p-4 rounded-lg text-left border border-gray-200">
-                        <p class="text-xs text-gray-500 font-bold uppercase mb-1">Bank BRI</p>
-                        <p class="font-bold text-xl tracking-widest text-black mb-1">469201022106538</p>
-                        <p class="text-xs text-gray-500 font-bold uppercase mb-1">Bank BNI</p>
-                        <p class="font-bold text-xl tracking-widest text-black mb-1">1973169145</p>
-                         <button onclick="copyToClipboard('469201022106538', this)" class="w-full py-2 bg-black text-white rounded transition-colors text-xs tracking-widest font-bold">
-                            <i class="fa-regular fa-copy mr-2"></i> SALIN REKENING BRI
-                              <p class="text-xs font-bold mb-3">a.n Powan</p>
-                        </button>
-                        <button onclick="copyToClipboard('1973169145', this)" class="w-full py-2 bg-black text-white rounded transition-colors text-xs tracking-widest font-bold">
-                            <i class="fa-regular fa-copy mr-2"></i> SALIN REKENING BNI
-                             <p class="text-xs font-bold mb-3">a.n Powan</p>
-                        </button>
-                        <p class="text-xs text-gray-500 font-bold uppercase mb-1">DANA,OVO,GOPAY</p>
-                        <p class="font-bold text-xl tracking-widest text-black mb-1">085337437037</p>
-                        <button onclick="copyToClipboard('085337437037', this)" class="w-full py-2 bg-black text-white rounded transition-colors text-xs tracking-widest font-bold">
-                            <i class="fa-regular fa-copy mr-2"></i> SALIN NOMOR DANA,OVO,GOPAY
-                        </button>                     
-                    </div>
-
-                    <div class="mt-6 pt-6 border-t-2 border-dashed border-gray-300 text-xs text-gray-500 text-center">
-                        <p>--- TERIMA KASIH ATAS TRANSAKSI ANDA ---</p>
-                        <p>Simpan struk ini sebagai bukti pembayaran sah.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 9. UCAPAN TERIMA KASIH / CREDITS -->
-        <section class="py-20 px-6 bg-konter-dark text-white reveal border-y border-konter-gray">
-            <div class="max-w-4xl mx-auto text-center">
-                <i class="fa-solid fa-handshake-angle text-konter-blue text-4xl mb-4 animate-pulse"></i>
-                <h2 class="font-digital text-3xl mb-8 uppercase tracking-widest text-konter-yellow">Didukung Oleh Jaringan:</h2>
                 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-                    <div class="p-4 border border-konter-blue/30 rounded-xl bg-konter-blue/5 hover:bg-konter-blue/20 transition-colors">
-                        <i class="fa-solid fa-guitar text-2xl text-konter-blue mb-2"></i>
-                        <p class="text-xs text-gray-400 font-mono">Full Band</p>
-                        <p class="font-bold text-sm">Djangkos Music</p>
-                    </div>
-                    <div class="p-4 border border-konter-blue/30 rounded-xl bg-konter-blue/5 hover:bg-konter-blue/20 transition-colors">
-                        <i class="fa-solid fa-camera text-2xl text-konter-blue mb-2"></i>
-                        <p class="text-xs text-gray-400 font-mono">Fotografer</p>
-                        <p class="font-bold text-sm">Endoq Potografer</p>
-                    </div>
-                    <div class="p-4 border border-konter-blue/30 rounded-xl bg-konter-blue/5 hover:bg-konter-blue/20 transition-colors">
-                        <i class="fa-solid fa-clipboard-check text-2xl text-konter-blue mb-2"></i>
-                        <p class="text-xs text-gray-400 font-mono">WO</p>
-                        <p class="font-bold text-sm">Dream Wedding</p>
-                    </div>
-                    <div class="p-4 border border-konter-blue/30 rounded-xl bg-konter-blue/5 hover:bg-konter-blue/20 transition-colors">
-                        <i class="fa-solid fa-microphone text-2xl text-konter-blue mb-2"></i>
-                        <p class="text-xs text-gray-400 font-mono">MC</p>
-                        <p class="font-bold text-sm">Hafidz Zahrack</p>
-                    </div>
-                </div>
-
-                <!-- Special Thanks for Exes -->
-                <div class="p-6 border-2 border-konter-red/50 rounded-2xl bg-konter-red/10 relative overflow-hidden mx-auto max-w-2xl transform rotate-1 hover:rotate-0 transition-transform">
-                    <div class="absolute -right-4 -top-4 text-6xl opacity-10 text-konter-red"><i class="fa-solid fa-heart-crack"></i></div>
-                    <h3 class="text-lg font-bold text-konter-red mb-2 uppercase tracking-widest font-mono">⚠️ Peringatan Sistem: VIP Guest</h3>
-                    <p class="text-sm font-medium italic">"Dan yang terakhir, ucapan terima kasih sebesar-besarnya kepada mantan-mantan dan ciwi-ciwi yang menyesal namun sempat hadir pada hari ini. Penyesalan selalu datang terlambat, karena slot ini sudah resmi sold out!" 😂</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- 10. RSVP & WISHES (Customer Service) -->
-        <section id="rsvp" class="py-20 px-6 reveal">
-            <div class="max-w-2xl mx-auto">
-                <div class="bg-konter-gray/20 p-8 md:p-12 rounded-3xl neon-border-blue relative">
-                    <div class="text-center mb-8">
-                        <h2 class="font-digital font-bold text-3xl text-konter-yellow mb-2 uppercase tracking-widest"><i class="fa-solid fa-headset mr-2 text-konter-blue"></i>Layanan Pelanggan</h2>
-                        <p class="text-xs font-mono text-gray-400">Silakan tinggalkan review, ulasan, atau konfirmasi kehadiran Anda di bawah ini.</p>
-                    </div>
-                    
-                    <form onsubmit="submitRSVP(event)" id="rsvp-form" class="space-y-4 font-mono">
-                        <div>
-                            <input type="text" id="guest-input-name" required class="w-full bg-konter-dark border border-konter-gray focus:border-konter-blue rounded-lg px-4 py-3 text-white focus:outline-none transition-colors text-sm" placeholder="> Input Nama_Pengguna..." />
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <!-- Feature 1 -->
+                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 hover:shadow-xl hover:border-gold-300 transition-all group">
+                        <div class="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center text-gold-600 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-calendar-plus"></i>
                         </div>
-                        
-                        <div>
-                            <textarea id="guest-input-msg" rows="3" required class="w-full bg-konter-dark border border-konter-gray focus:border-konter-blue rounded-lg px-4 py-3 text-white focus:outline-none transition-colors resize-none text-sm" placeholder="> Input Pesan_Teks/Ulasan..."></textarea>
+                        <h3 class="text-xl font-bold text-dark mb-3">Multi-Occasion & Event</h3>
+                        <p class="text-slate-600">Gabungkan Akad Nikah, Resepsi, dan Khitanan dalam satu undangan tanpa repot. Hemat dan praktis.</p>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 hover:shadow-xl hover:border-gold-300 transition-all group">
+                        <div class="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center text-gold-600 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-users"></i>
                         </div>
-                        
-                        <button type="submit" class="w-full bg-konter-blue hover:bg-blue-600 text-white font-bold tracking-widest rounded-lg px-4 py-3 transition-colors flex items-center justify-center shadow-[0_0_15px_rgba(14,165,233,0.3)] text-sm">
-                            <i class="fa-solid fa-paper-plane text-lg mr-2"></i> KIRIM ULASAN
-                        </button>
-                    </form>
-
-                    <!-- Tempat Menampilkan Komentar -->
-                    <div class="mt-10 border-t border-konter-gray pt-6">
-                        <h3 class="text-xs font-mono text-konter-yellow mb-4 uppercase tracking-widest">Log Pesan Masuk:</h3>
-                        <div id="comments-list" class="space-y-3 max-h-60 overflow-y-auto custom-scrollbar pr-2 text-left font-mono">
-                            <!-- Komentar Dummy Awal -->
-                            <div class="bg-konter-dark/50 p-3 rounded-lg border border-konter-gray/50">
-                                <p class="font-bold text-konter-blue text-xs">Keluarga Besar Djangkos</p>
-                                <p class="text-xs text-gray-300 mt-1">> Selamat menempuh hidup baru! Semoga sinyal keluarganya selalu kuat dan rezekinya unlimited. terimakasih telah membuat undangan digital di www.djangkos.com</p>
-                            </div>
+                        <h3 class="text-xl font-bold text-dark mb-3">Sistem RSVP & Buku Tamu</h3>
+                        <p class="text-slate-600">Kelola konfirmasi kehadiran tamu dan terima ucapan doa restu secara real-time dari dashboard Anda.</p>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 hover:shadow-xl hover:border-gold-300 transition-all group">
+                        <div class="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center text-gold-600 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-link"></i>
                         </div>
+                        <h3 class="text-xl font-bold text-dark mb-3">Link Personal Tamu</h3>
+                        <p class="text-slate-600">Buat link khusus yang secara otomatis menyapa nama tamu undangan Anda. Terasa lebih sopan dan eksklusif.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 11. CLOSING & FOOTER -->
-        <footer class="relative pt-24 pb-12 text-center mt-12 overflow-hidden flex flex-col items-center justify-center reveal">
-            <div class="z-10 px-6 max-w-2xl mx-auto">
-                <i class="fa-solid fa-power-off text-konter-red text-3xl mb-6 opacity-80 hover:text-white cursor-pointer transition-colors" title="Log Out"></i>
-                <p class="text-base font-mono leading-relaxed mb-8 text-gray-400">
-                    "Terima kasih telah membaca syarat & ketentuan hati kami. Sampai jumpa di jaringan yang sama pada hari H nanti."
-                </p>
-                <h2 class="font-digital text-4xl md:text-5xl text-white neon-text-blue mb-4">Powan & NOPISARI</h2>
-                <p class="font-mono text-xs text-konter-yellow mb-16">[ SYSTEM CONNECTION ESTABLISHED ]</p>
+        <!-- Theme Categories -->
+        <section class="py-20 bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-serif font-bold text-dark mb-4">Satu Platform, Berbagai Kategori</h2>
+                    <p class="text-slate-600 max-w-2xl mx-auto">Pilih tema yang sesuai dengan jenis acara Anda. Editor kami akan menyesuaikan form isian secara otomatis.</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
+                        <i class="fas fa-ring text-3xl text-gold-500 mb-3"></i>
+                        <h4 class="font-semibold text-dark">Pernikahan</h4>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
+                        <i class="fas fa-child text-3xl text-gold-500 mb-3"></i>
+                        <h4 class="font-semibold text-dark">Khitanan</h4>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
+                        <i class="fas fa-baby text-3xl text-gold-500 mb-3"></i>
+                        <h4 class="font-semibold text-dark">Aqiqah</h4>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
+                        <i class="fas fa-birthday-cake text-3xl text-gold-500 mb-3"></i>
+                        <h4 class="font-semibold text-dark">Ulang Tahun</h4>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
+                        <i class="fas fa-praying-hands text-3xl text-gold-500 mb-3"></i>
+                        <h4 class="font-semibold text-dark">Tasyakuran</h4>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
+                        <i class="fas fa-graduation-cap text-3xl text-gold-500 mb-3"></i>
+                        <h4 class="font-semibold text-dark">Wisuda</h4>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
+                        <i class="fas fa-briefcase text-3xl text-gold-500 mb-3"></i>
+                        <h4 class="font-semibold text-dark">Acara Resmi</h4>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md cursor-pointer transition-all hover:border-gold-400">
+                        <i class="fas fa-plus text-3xl text-gold-500 mb-3"></i>
+                        <h4 class="font-semibold text-dark">Custom Event</h4>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <!-- Custom Footer Djangkos -->
-            <div class="z-10 w-full border-t border-konter-gray pt-6 mt-8 flex flex-col items-center">
-                <p class="text-[10px] text-gray-500 font-mono mb-2 uppercase">Sistem Undangan Digital Dikembangkan Oleh:</p>
-                <a href="https://www.djangkos.com" target="_blank" class="text-sm font-bold tracking-widest text-konter-white hover:text-konter-blue transition-colors font-digital">
-                    WWW.DJANGKOS.COM
-                </a>
+        <!-- Pricing Placeholder -->
+        <section id="pricing" class="py-20 bg-dark text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl font-serif font-bold mb-4">Mulai Secara Gratis</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto mb-10">Tingkatkan ke paket Premium atau Bisnis untuk fitur eksklusif tanpa batas.</p>
+                <button onclick="app.navigate('auth')" class="gold-bg-gradient text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all">Lihat Paket Harga</button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t border-slate-200 py-10">
+            <div class="max-w-7xl mx-auto px-4 text-center text-slate-500">
+                <p>&copy; 2026 INVITARA. All rights reserved. The Modern SaaS Digital Invitation.</p>
             </div>
         </footer>
+    </main>
 
-    </div>
-
-    <!-- ==================== JAVASCRIPT ==================== -->
-    <script>
-        // 1. Ambil Nama Tamu dari Link (Contoh: web.com/?to=Bapak Budi)
-        const urlParams = new URLSearchParams(window.location.search);
-        const guestName = urlParams.get('to') || urlParams.get('kpd') || 'Pelanggan Setia';
-        document.getElementById('guest-name').innerText = guestName;
-
-        const coverPage = document.getElementById('cover-page');
-        const mainContent = document.getElementById('main-content');
-        const bgMusic = document.getElementById('bg-music');
-        const musicBtn = document.getElementById('music-btn');
-        const musicIcon = document.getElementById('music-icon');
-        const bodyContainer = document.getElementById('body-container');
-        const bottomNav = document.getElementById('bottom-nav');
-        let isPlaying = false;
-
-        // 2. Fungsi Buka Undangan
-        function openInvitation() {
-            var duration = 3 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
-            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-            var interval = setInterval(function() {
-                var timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) { return clearInterval(interval); }
-                var particleCount = 50 * (timeLeft / duration);
-                // Konfeti disesuaikan dengan warna konter
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, colors: ['#0ea5e9', '#facc15', '#22c55e', '#ef4444'] }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, colors: ['#0ea5e9', '#facc15', '#22c55e', '#ef4444'] }));
-            }, 250);
-
-            coverPage.style.transform = 'translateY(-100vh)';
+    <!-- VIEW: AUTHENTICATION -->
+    <main id="view-auth" class="spa-view bg-slate-50 flex-grow flex items-center justify-center py-20">
+        <div class="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
+            <div class="text-center mb-8">
+                <span class="font-serif text-3xl font-bold text-dark tracking-tight mb-2 block">INVIT<span class="text-gold-500">ARA</span></span>
+                <p class="text-slate-500 text-sm">Masuk ke dashboard untuk mengelola undangan Anda.</p>
+            </div>
             
-            setTimeout(() => {
-                coverPage.style.display = 'none';
-                mainContent.classList.remove('hidden');
+            <form id="auth-form" onsubmit="event.preventDefault(); app.login();">
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+                    <input type="email" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none transition-all" placeholder="nama@email.com">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Password</label>
+                    <input type="password" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none transition-all" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full gold-bg-gradient text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-gold-500/30 transition-all mb-4">
+                    Masuk
+                </button>
+                <div class="relative flex items-center justify-center mb-4">
+                    <div class="border-t border-slate-200 w-full"></div>
+                    <span class="bg-white px-3 text-sm text-slate-400 absolute">atau</span>
+                </div>
+                <button type="button" onclick="app.login()" class="w-full bg-white border border-slate-300 text-slate-700 py-3 rounded-xl font-medium hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                    <i class="fab fa-google text-red-500"></i> Masuk dengan Google
+                </button>
+            </form>
+            <p class="text-center text-sm text-slate-500 mt-6">
+                Belum punya akun? <a href="#" class="text-gold-600 font-semibold hover:underline">Daftar Sekarang</a>
+            </p>
+            
+            <!-- Tahap 1 Note for testing -->
+            <div class="mt-6 p-3 bg-blue-50 text-blue-800 text-xs rounded-lg border border-blue-100 text-center">
+                <strong>Mode Tahap 1:</strong> Klik tombol masuk apa saja untuk langsung melihat tampilan Dashboard SaaS. (Firebase Auth akan diimplementasikan di Tahap 2).
+            </div>
+        </div>
+    </main>
 
-                setTimeout(() => { 
-                    mainContent.style.opacity = '1'; 
-                    bottomNav.classList.remove('hidden');
-                    setTimeout(() => {
-                        bottomNav.classList.remove('opacity-0', 'translate-y-10');
-                    }, 100);
-                    reveal(); 
-                }, 50);
-
-                bodyContainer.classList.remove('locked');
-                musicBtn.classList.remove('hidden');
+    <!-- VIEW: DASHBOARD (SaaS Layout) -->
+    <main id="view-dashboard" class="spa-view h-screen w-full bg-slate-50 flex overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col hidden md:flex z-20">
+            <div class="h-20 flex items-center px-6 border-b border-slate-100">
+                <span class="font-serif text-2xl font-bold text-dark tracking-tight">INVIT<span class="text-gold-500">ARA</span></span>
+            </div>
+            
+            <div class="p-4">
+                <button onclick="app.navigate('builder')" class="w-full gold-bg-gradient text-white py-2.5 rounded-lg font-medium flex items-center justify-center gap-2 hover:shadow-md transition-all">
+                    <i class="fas fa-plus"></i> Buat Undangan
+                </button>
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto no-scrollbar py-2 px-3 space-y-1">
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 bg-amber-50 text-gold-600 rounded-lg font-medium">
+                    <i class="fas fa-chart-pie w-5 text-center"></i> Dashboard
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-envelope-open-text w-5 text-center"></i> Undangan Saya
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-palette w-5 text-center"></i> Galeri Tema
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-address-book w-5 text-center"></i> Buku Tamu Global
+                </a>
                 
-                bgMusic.volume = 0.5;
-                toggleMusic();
-            }, 800);
-        }
-
-        // 3. Audio Controller
-        function toggleMusic() {
-            if (isPlaying) {
-                bgMusic.pause();
-                musicIcon.classList.remove('fa-volume-high');
-                musicIcon.classList.add('fa-volume-xmark');
-                musicBtn.classList.add('opacity-50');
-            } else {
-                bgMusic.play();
-                musicIcon.classList.remove('fa-volume-xmark');
-                musicIcon.classList.add('fa-volume-high');
-                musicBtn.classList.remove('opacity-50');
-            }
-            isPlaying = !isPlaying;
-        }
-
-        // 4. Countdown Timer
-const weddingDate = new Date(2026, 4, 3, 10, 0, 0).getTime();
-const cdInterval = setInterval(function() {
-    const now = new Date().getTime();
-    const distance = weddingDate - now;
-
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    document.getElementById("cd-days").innerText = days < 10 ? '0'+days : days;
-    document.getElementById("cd-hours").innerText = hours < 10 ? '0'+hours : hours;
-    document.getElementById("cd-minutes").innerText = minutes < 10 ? '0'+minutes : minutes;
-    document.getElementById("cd-seconds").innerText = seconds < 10 ? '0'+seconds : seconds;
-
-    if (distance < 0) {
-        clearInterval(cdInterval);
-        document.getElementById("cd-days").innerText = "00";
-        document.getElementById("cd-hours").innerText = "00";
-        document.getElementById("cd-minutes").innerText = "00";
-        document.getElementById("cd-seconds").innerText = "00";
-    }
-}, 1000);
-
-        // 5. Copy Rekening
-        function copyToClipboard(text, btnElement) {
-            const tempInput = document.createElement("input");
-            tempInput.value = text;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempInput);
-
-            const originalHTML = btnElement.innerHTML;
-            btnElement.innerHTML = '<i class="fa-solid fa-check mr-2"></i> BERHASIL DI-COPY';
-            btnElement.classList.replace('bg-black', 'bg-green-600');
+                <div class="pt-4 pb-2">
+                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Bisnis & Setting</p>
+                </div>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-credit-card w-5 text-center"></i> Tagihan & Paket
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-cog w-5 text-center"></i> Pengaturan
+                </a>
+            </nav>
             
-            setTimeout(() => {
-                btnElement.innerHTML = originalHTML;
-                btnElement.classList.replace('bg-green-600', 'bg-black');
-            }, 2000);
-        }
+            <!-- User Menu -->
+            <div class="p-4 border-t border-slate-200">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold">
+                        A
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-dark">Admin User</p>
+                        <p class="text-xs text-gold-600 font-medium">Paket Premium</p>
+                    </div>
+                </div>
+                <button onclick="app.logout()" class="w-full text-left px-3 py-2 text-sm text-red-500 font-medium hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+        </aside>
 
-        // 6. Animasi Scroll
-        function reveal() {
-            var reveals = document.querySelectorAll(".reveal");
-            for (var i = 0; i < reveals.length; i++) {
-                var windowHeight = window.innerHeight;
-                var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 50; 
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col h-screen overflow-hidden">
+            <!-- Topbar (Mobile mainly + Search) -->
+            <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-10">
+                <div class="flex items-center gap-4 md:hidden">
+                    <button class="text-slate-600"><i class="fas fa-bars text-xl"></i></button>
+                    <span class="font-serif text-xl font-bold">INVIT<span class="text-gold-500">ARA</span></span>
+                </div>
+                <div class="hidden md:flex items-center bg-slate-50 rounded-full px-4 py-2 border border-slate-200 w-96">
+                    <i class="fas fa-search text-slate-400 mr-2"></i>
+                    <input type="text" placeholder="Cari undangan atau tamu..." class="bg-transparent border-none outline-none text-sm w-full">
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-600 flex items-center justify-center hover:text-gold-500 transition-colors relative">
+                        <i class="fas fa-bell"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <main class="flex-1 overflow-y-auto p-6 md:p-8">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h1 class="text-2xl font-bold text-dark mb-1">Selamat Datang, Admin 👋</h1>
+                        <p class="text-slate-500 text-sm">Berikut adalah ringkasan akun Invitara Anda hari ini.</p>
+                    </div>
+                </div>
+                
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl"><i class="fas fa-envelope-open"></i></div>
+                            <span class="text-xs font-semibold text-green-500 bg-green-50 px-2 py-1 rounded-md">+2 Baru</span>
+                        </div>
+                        <p class="text-slate-500 text-sm font-medium mb-1">Total Undangan</p>
+                        <h3 class="text-3xl font-bold text-dark">5</h3>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-600 flex items-center justify-center text-xl"><i class="fas fa-eye"></i></div>
+                            <span class="text-xs font-semibold text-green-500 bg-green-50 px-2 py-1 rounded-md">+12%</span>
+                        </div>
+                        <p class="text-slate-500 text-sm font-medium mb-1">Total Views</p>
+                        <h3 class="text-3xl font-bold text-dark">1,240</h3>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl"><i class="fas fa-check-circle"></i></div>
+                        </div>
+                        <p class="text-slate-500 text-sm font-medium mb-1">Total RSVP Hadir</p>
+                        <h3 class="text-3xl font-bold text-dark">342</h3>
+                    </div>
 
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add("active");
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl"><i class="fas fa-book-open"></i></div>
+                        </div>
+                        <p class="text-slate-500 text-sm font-medium mb-1">Ucapan Buku Tamu</p>
+                        <h3 class="text-3xl font-bold text-dark">89</h3>
+                    </div>
+                </div>
+
+                <!-- Recent Invitations -->
+                <h2 class="text-lg font-bold text-dark mb-4">Undangan Terakhir</h2>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200">
+                                <th class="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Nama Undangan</th>
+                                <th class="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Status</th>
+                                <th class="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Tema</th>
+                                <th class="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Views</th>
+                                <th class="py-4 px-6 text-xs font-semibold text-slate-500 uppercase text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <!-- Mock Data -->
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="py-4 px-6">
+                                    <p class="font-bold text-dark text-sm">Pernikahan & Khitanan Ahmad & Siti</p>
+                                    <p class="text-xs text-slate-500 mt-1">Multi Event • ahmad-siti</p>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Published</span>
+                                </td>
+                                <td class="py-4 px-6 text-sm text-slate-600">Royal Gold Elegant</td>
+                                <td class="py-4 px-6 text-sm font-semibold text-dark">850</td>
+                                <td class="py-4 px-6 text-right">
+                                    <button class="text-slate-400 hover:text-gold-500 mx-1"><i class="fas fa-edit"></i></button>
+                                    <button class="text-slate-400 hover:text-blue-500 mx-1"><i class="fas fa-share-alt"></i></button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="py-4 px-6">
+                                    <p class="font-bold text-dark text-sm">Aqiqah Muhammad Fatih</p>
+                                    <p class="text-xs text-slate-500 mt-1">Aqiqah • aqiqah-fatih</p>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <span class="px-2.5 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">Draft</span>
+                                </td>
+                                <td class="py-4 px-6 text-sm text-slate-600">Islamic Pastel</td>
+                                <td class="py-4 px-6 text-sm font-semibold text-dark">0</td>
+                                <td class="py-4 px-6 text-right">
+                                    <button class="text-slate-400 hover:text-gold-500 mx-1"><i class="fas fa-edit"></i></button>
+                                    <button class="text-slate-400 hover:text-blue-500 mx-1"><i class="fas fa-share-alt"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </main>
+
+    <!-- VIEW: INVITATION BUILDER WIZARD -->
+    <main id="view-builder" class="spa-view h-screen w-full bg-white flex flex-col overflow-hidden">
+        
+        <!-- Builder Header -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-10 flex-shrink-0">
+            <div class="flex items-center gap-4">
+                <button onclick="app.navigate('dashboard')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div>
+                    <h2 class="font-bold text-dark text-sm">Buat Undangan Baru</h2>
+                    <p class="text-xs text-slate-500">Step 1 dari 4: Pilih Kategori</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-medium text-slate-400 italic">Autosave: off</span>
+                <button class="bg-slate-100 text-slate-600 px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-slate-200 transition-colors">Simpan Draft</button>
+                <button class="gold-bg-gradient text-white px-4 py-1.5 rounded-lg text-sm font-medium shadow-sm hover:shadow-md transition-all">Lanjut <i class="fas fa-chevron-right text-xs ml-1"></i></button>
+            </div>
+        </header>
+
+        <!-- Builder Content (Step 1: Category) -->
+        <div class="flex-1 overflow-y-auto bg-slate-50 p-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <h1 class="text-3xl font-bold text-dark mb-2">Pilih Jenis Acara Utama</h1>
+                    <p class="text-slate-500">Anda tetap dapat menambahkan acara tambahan (Multi-Event) nanti di pengaturan.</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Category Card -->
+                    <div class="bg-white p-6 rounded-2xl border-2 border-gold-500 shadow-md text-center cursor-pointer relative overflow-hidden group">
+                        <div class="absolute top-3 right-3 text-gold-500"><i class="fas fa-check-circle text-xl"></i></div>
+                        <div class="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gold-600 text-2xl group-hover:scale-110 transition-transform">
+                            <i class="fas fa-ring"></i>
+                        </div>
+                        <h3 class="font-bold text-dark">Pernikahan</h3>
+                        <p class="text-xs text-slate-500 mt-1">Akad & Resepsi</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-gold-300 text-center cursor-pointer transition-all group">
+                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-600 text-2xl group-hover:scale-110 transition-transform group-hover:bg-amber-50 group-hover:text-gold-600">
+                            <i class="fas fa-child"></i>
+                        </div>
+                        <h3 class="font-bold text-dark">Khitanan</h3>
+                        <p class="text-xs text-slate-500 mt-1">Tasyakuran Khitan</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-gold-300 text-center cursor-pointer transition-all group">
+                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-600 text-2xl group-hover:scale-110 transition-transform group-hover:bg-amber-50 group-hover:text-gold-600">
+                            <i class="fas fa-baby"></i>
+                        </div>
+                        <h3 class="font-bold text-dark">Aqiqah</h3>
+                        <p class="text-xs text-slate-500 mt-1">Kelahiran Anak</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-gold-300 text-center cursor-pointer transition-all group">
+                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-600 text-2xl group-hover:scale-110 transition-transform group-hover:bg-amber-50 group-hover:text-gold-600">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <h3 class="font-bold text-dark">Custom Event</h3>
+                        <p class="text-xs text-slate-500 mt-1">Mulai dari awal</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Core Application Logic -->
+    <script type="module">
+        // Placeholder for Firebase Imports (To be used in TAHAP 2)
+        // import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        // import { getAuth, ... } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // import { getFirestore, ... } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const App = {
+            state: {
+                currentRoute: 'home',
+                isAuthenticated: false,
+                user: null
+            },
+            
+            init() {
+                this.setupRouter();
+                this.handleRoute();
+                console.log("INVITARA TAHAP 1 Initialized");
+            },
+
+            setupRouter() {
+                window.addEventListener('hashchange', () => this.handleRoute());
+            },
+
+            handleRoute() {
+                let hash = window.location.hash.substring(1);
+                if (!hash) hash = 'home';
+                
+                // Temporary Auth Guard simulation for Tahap 1
+                const protectedRoutes = ['dashboard', 'builder'];
+                if (protectedRoutes.includes(hash) && !this.state.isAuthenticated) {
+                    // For Demo Tahap 1, we let them pass if they clicked login
+                    // Normally we would redirect to 'auth'
                 }
-            }
-        }
-        window.addEventListener("scroll", reveal);
 
-        // 7. Komentar Langsung di Web (RSVP)
-        function submitRSVP(event) {
-            event.preventDefault(); 
-            
-            const name = document.getElementById("guest-input-name").value;
-            const msg = document.getElementById("guest-input-msg").value;
-            
-            const commentDiv = document.createElement("div");
-            commentDiv.className = "bg-konter-dark/50 p-3 rounded-lg border border-konter-gray/50 fade-in-up";
-            
-            commentDiv.innerHTML = `
-                <p class="font-bold text-konter-blue text-xs">${name}</p>
-                <p class="text-xs text-gray-300 mt-1">> ${msg}</p>
-            `;
-            
-            const list = document.getElementById("comments-list");
-            list.insertBefore(commentDiv, list.firstChild);
-            
-            document.getElementById("guest-input-name").value = "";
-            document.getElementById("guest-input-msg").value = "";
-            
-            alert("Pesan berhasil di-submit ke server hati kami! Terima kasih.");
-        }
+                this.navigate(hash, false);
+            },
+
+            navigate(route, changeHash = true) {
+                if (changeHash) {
+                    window.location.hash = route;
+                    return; // handleRoute will catch the hash change
+                }
+
+                // Hide all views
+                document.querySelectorAll('.spa-view').forEach(el => {
+                    el.classList.remove('active');
+                });
+
+                // Show target view
+                const targetView = document.getElementById(`view-${route}`);
+                if (targetView) {
+                    targetView.classList.add('active');
+                    this.state.currentRoute = route;
+                } else {
+                    document.getElementById('view-home').classList.add('active');
+                }
+
+                // Toggle Main Nav visibility
+                const mainNav = document.getElementById('main-nav');
+                if (route === 'dashboard' || route === 'builder') {
+                    mainNav.style.display = 'none';
+                } else {
+                    mainNav.style.display = 'block';
+                }
+            },
+
+            // Mock Auth Methods for Tahap 1
+            login() {
+                // Simulate login success
+                this.state.isAuthenticated = true;
+                this.state.user = { name: "Admin", email: "admin@invitara.com" };
+                this.navigate('dashboard');
+            },
+
+            logout() {
+                this.state.isAuthenticated = false;
+                this.state.user = null;
+                this.navigate('home');
+            }
+        };
+
+        // Expose to window for inline onclick handlers
+        window.app = App;
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => App.init());
     </script>
 </body>
 </html>
