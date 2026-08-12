@@ -262,27 +262,16 @@
         import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // ========================================================
-        // MASUKKAN KEMBALI KONFIGURASI FIREBASE ANDA DI SINI
+        // KONFIGURASI FIREBASE ANDA YANG SUDAH BENAR
         // ========================================================
-        rules_version = '2';
-
-service cloud.firestore {
-  match /databases/{database}/documents {
-
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2026, 9, 11);
-    }
-  }
-}
+        const firebaseConfig = {
+            apiKey: "AIzaSyArNg3TnZxHJHrkRJ7bEAF4I_1Yt-r-IBY",
+            authDomain: "djangkos-invitation.firebaseapp.com",
+            projectId: "djangkos-invitation",
+            storageBucket: "djangkos-invitation.firebasestorage.app",
+            messagingSenderId: "1093261845394",
+            appId: "1:1093261845394:web:57c3a70408ce3355a0974b",
+            measurementId: "G-H5H0L877M0"
         };
 
         const app = initializeApp(firebaseConfig);
