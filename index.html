@@ -63,7 +63,6 @@
         <!-- HALAMAN: HOME -->
         <!-- ========================================== -->
         <section id="home" class="spa-view active flex-grow">
-            <!-- (Sama seperti sebelumnya) -->
             <div class="bg-white">
                 <div class="max-w-7xl mx-auto px-4 py-20 md:py-32 flex flex-col md:flex-row items-center">
                     <div class="md:w-1/2 text-center md:text-left mb-12 md:mb-0 md:pr-10">
@@ -95,7 +94,6 @@
         <!-- HALAMAN: LOGIN -->
         <!-- ========================================== -->
         <section id="login" class="spa-view flex-grow">
-            <!-- (Sama seperti sebelumnya) -->
             <div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
                 <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
                     <h2 class="text-2xl font-bold text-dark text-center mb-6">Masuk ke DJANGKOS</h2>
@@ -119,7 +117,6 @@
         <!-- HALAMAN: REGISTER -->
         <!-- ========================================== -->
         <section id="register" class="spa-view flex-grow">
-            <!-- (Sama seperti sebelumnya) -->
             <div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
                 <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
                     <h2 class="text-2xl font-bold text-dark text-center mb-6">Buat Akun Baru</h2>
@@ -260,13 +257,9 @@
     <!-- LOGIC FIREBASE & APP -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        
-        // TAMBAHAN IMPORT UNTUK CRUD
-        import { 
-            getFirestore, doc, setDoc, getDoc, 
-            collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // IMPORT FIREBASE AUTH & FIRESTORE
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // ========================================================
         // MASUKKAN KEMBALI KONFIGURASI FIREBASE ANDA DI SINI
@@ -313,7 +306,8 @@
             if (user) {
                 document.getElementById('dash-username').innerText = user.displayName || user.email;
                 appRouter();
-                // Load data profil (seperti tahap 3)
+                
+                // Load/Create data profil
                 const userDocRef = doc(db, "users", user.uid);
                 const docSnap = await getDoc(userDocRef);
                 if (!docSnap.exists()) {
@@ -338,16 +332,14 @@
         const emptyState = document.getElementById('empty-state');
         const loadingState = document.getElementById('loading-invitations');
 
-        // READ: Mengambil data undangan user login
         async function fetchInvitations() {
             if (!currentUser) return;
             loadingState.classList.remove('hidden');
             emptyState.classList.add('hidden');
             invGrid.classList.add('hidden');
-            invGrid.innerHTML = ''; // Bersihkan grid
+            invGrid.innerHTML = ''; 
 
             try {
-                // Query: Ambil koleksi "invitations" di mana userId = id pengguna saat ini
                 const q = query(collection(db, "invitations"), where("userId", "==", currentUser.uid));
                 const querySnapshot = await getDocs(q);
                 
@@ -369,12 +361,10 @@
             }
         }
 
-        // RENDER: Membuat tampilan kartu undangan di HTML
         function renderInvitationCard(id, data) {
             const card = document.createElement('div');
             card.className = "bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition";
             
-            // Format Status
             let statusBadge = data.status === 'draft' ? `<span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold">DRAFT</span>` 
                             : `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">PUBLISHED</span>`;
 
@@ -399,13 +389,12 @@
             invGrid.appendChild(card);
         }
 
-        // CREATE: Logic Submit Form Buat Undangan
         document.getElementById('form-create-invitation').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = document.getElementById('btn-submit-invitation');
             const title = document.getElementById('inv-title').value;
             const categoryId = document.getElementById('inv-category').value;
-            const slug = document.getElementById('inv-slug').value.toLowerCase().replace(/[^a-z0-9-]/g, ''); // bersihkan slug
+            const slug = document.getElementById('inv-slug').value.toLowerCase().replace(/[^a-z0-9-]/g, ''); 
 
             if (!slug) { alert("Slug tidak valid."); return; }
             if (!currentUser) return;
@@ -414,7 +403,6 @@
             btnSubmit.disabled = true;
 
             try {
-                // Simpan ke Firestore koleksi "invitations"
                 await addDoc(collection(db, "invitations"), {
                     userId: currentUser.uid,
                     title: title,
@@ -422,10 +410,9 @@
                     slug: slug,
                     status: 'draft',
                     createdAt: serverTimestamp(),
-                    themeId: null // Tema akan dipilih nanti di Tahap Builder
+                    themeId: null 
                 });
 
-                // Tutup modal, reset form, dan muat ulang data
                 closeModal();
                 document.getElementById('form-create-invitation').reset();
                 fetchInvitations();
@@ -438,12 +425,11 @@
             }
         });
 
-        // DELETE: Fungsi Hapus Undangan (Global Access)
         window.deleteInvitation = async function(id) {
             if (confirm("Apakah Anda yakin ingin menghapus undangan ini secara permanen?")) {
                 try {
                     await deleteDoc(doc(db, "invitations", id));
-                    fetchInvitations(); // Refresh list
+                    fetchInvitations(); 
                 } catch (error) {
                     console.error("Error deleting document: ", error);
                     alert("Gagal menghapus undangan.");
@@ -451,7 +437,7 @@
             }
         }
 
-        // --- MODAL LOGIC & AUTO SLUG ---
+        // --- MODAL & SLUG LOGIC ---
         const modal = document.getElementById('modal-create');
         const titleInput = document.getElementById('inv-title');
         const slugInput = document.getElementById('inv-slug');
@@ -463,21 +449,45 @@
         document.getElementById('btn-close-modal').addEventListener('click', closeModal);
         document.getElementById('btn-cancel-modal').addEventListener('click', closeModal);
 
-        // Auto-generate slug saat mengetik Judul
         titleInput.addEventListener('input', function() {
             let val = this.value.toLowerCase();
-            // Ganti spasi & "&" menjadi "-", hapus karakter non-alphanumeric lainnya
             slugInput.value = val.replace(/\s+/g, '-').replace(/&/g, 'dan').replace(/[^a-z0-9-]/g, '');
         });
 
-        // --- AUTH BASIC LOGIN/LOGOUT ---
+        // --- REGISTER, LOGIN & LOGOUT LOGIC ---
+        
+        document.getElementById('form-register').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            try {
+                // Proses pendaftaran user baru
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                
+                // Menyimpan nama ke profil Firebase Auth
+                await updateProfile(userCredential.user, { displayName: name });
+                
+                // Tidak perlu redirect manual, karena onAuthStateChanged akan langsung
+                // mendeteksi user login dan membawanya ke Dashboard.
+            } catch (error) {
+                console.error(error);
+                alert("Pendaftaran gagal: " + error.message);
+            }
+        });
+
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
-            try { await signInWithEmailAndPassword(auth, email, password); } 
-            catch (error) { alert("Login gagal."); }
+            try { 
+                await signInWithEmailAndPassword(auth, email, password); 
+            } catch (error) { 
+                alert("Login gagal. Periksa kembali email dan password."); 
+            }
         });
+        
         document.getElementById('btn-logout').addEventListener('click', async () => {
             await signOut(auth);
             window.location.hash = '#home';
