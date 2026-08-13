@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DJANGKOS - Platform Undangan Digital Multi-Event</title>
     
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#d97706', /* amber-600 */
-                        dark: '#1f2937',    /* gray-800 */
+                        primary: '#d97706', 
+                        dark: '#1f2937',    
                     }
                 }
             }
@@ -26,7 +25,6 @@
         .spa-view.active { display: block; opacity: 1; }
         .spa-view.flex-view.active { display: flex; }
         
-        /* Modal Animation */
         .modal-overlay { display: none; opacity: 0; transition: opacity 0.2s ease-in-out; }
         .modal-overlay.active { display: flex; opacity: 1; }
     </style>
@@ -91,7 +89,7 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- HALAMAN: LOGIN -->
+        <!-- HALAMAN: LOGIN & REGISTER -->
         <!-- ========================================== -->
         <section id="login" class="spa-view flex-grow">
             <div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
@@ -113,9 +111,6 @@
             </div>
         </section>
 
-        <!-- ========================================== -->
-        <!-- HALAMAN: REGISTER -->
-        <!-- ========================================== -->
         <section id="register" class="spa-view flex-grow">
             <div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
                 <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
@@ -143,8 +138,7 @@
         <!-- HALAMAN: DASHBOARD SAAS (DENGAN CRUD)      -->
         <!-- ========================================== -->
         <section id="dashboard" class="spa-view flex-view w-full min-h-screen bg-gray-50 relative">
-            
-            <!-- Sidebar Kiri -->
+            <!-- Sidebar -->
             <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col fixed h-full z-10">
                 <div class="h-16 flex items-center px-6 border-b border-gray-200">
                     <a href="#dashboard" class="text-2xl font-black text-dark tracking-tighter">
@@ -157,14 +151,12 @@
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                             Dashboard
                         </a>
-                        <!-- Menu lainnya akan aktif nanti -->
                     </div>
                 </div>
             </aside>
 
-            <!-- Area Konten Utama -->
+            <!-- Main Content -->
             <div class="flex-1 flex flex-col md:ml-64 w-full">
-                
                 <!-- Topbar -->
                 <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <h2 class="text-lg font-bold text-gray-800">Dashboard Overview</h2>
@@ -176,7 +168,6 @@
                     </div>
                 </header>
 
-                <!-- Isi Dashboard -->
                 <main class="p-6">
                     <div class="flex justify-between items-end mb-8">
                         <div>
@@ -189,13 +180,11 @@
                         </button>
                     </div>
 
-                    <!-- Indikator Loading -->
                     <div id="loading-invitations" class="text-center py-10 hidden">
                         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
                         <p class="text-gray-500">Memuat data undangan...</p>
                     </div>
 
-                    <!-- Area Kosong (Akan disembunyikan via JS jika ada data) -->
                     <div id="empty-state" class="bg-white rounded-2xl border border-gray-200 border-dashed p-12 text-center flex flex-col items-center justify-center">
                         <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 mb-4">
                             <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
@@ -204,14 +193,12 @@
                         <p class="text-gray-500 mb-6">Mulai buat undangan pertama Anda sekarang.</p>
                     </div>
 
-                    <!-- Grid List Undangan (Akan diisi oleh JS) -->
-                    <div id="invitation-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-                        <!-- Data undangan akan dirender di sini -->
-                    </div>
+                    <!-- Grid List Undangan -->
+                    <div id="invitation-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 hidden"></div>
                 </main>
             </div>
 
-            <!-- MODAL: BUAT UNDANGAN BARU -->
+            <!-- MODAL 1: BUAT UNDANGAN BARU -->
             <div id="modal-create" class="modal-overlay fixed inset-0 bg-gray-900 bg-opacity-50 z-50 items-center justify-center p-4">
                 <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all">
                     <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
@@ -222,7 +209,7 @@
                     </div>
                     <form id="form-create-invitation" class="p-6 space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Judul Undangan / Nama Pasangan</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Judul Undangan (Nama Pasangan/Acara)</label>
                             <input type="text" id="inv-title" placeholder="Contoh: Ahmad & Siti" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
                         </div>
                         <div>
@@ -231,7 +218,7 @@
                                 <option value="wedding">Pernikahan</option>
                                 <option value="khitan">Khitanan</option>
                                 <option value="aqiqah">Aqiqah</option>
-                                <option value="multi">Multi Event (Pernikahan + Khitanan, dll)</option>
+                                <option value="multi">Multi Event (Banyak Acara)</option>
                                 <option value="other">Lainnya</option>
                             </select>
                         </div>
@@ -241,7 +228,6 @@
                                 <span class="bg-gray-100 border border-gray-300 border-r-0 px-3 py-2 rounded-l-lg text-sm text-gray-500">djangkosinvitation.com/</span>
                                 <input type="text" id="inv-slug" placeholder="ahmad-siti" required class="w-full px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-primary outline-none text-sm lowercase">
                             </div>
-                            <p class="text-xs text-gray-400 mt-1">Gunakan huruf kecil, angka, dan tanda hubung (-).</p>
                         </div>
                         <div class="pt-4 flex justify-end gap-3">
                             <button type="button" id="btn-cancel-modal" class="px-5 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg transition">Batal</button>
@@ -251,18 +237,98 @@
                 </div>
             </div>
 
+            <!-- MODAL 2: MANAJEMEN MULTI-EVENT (BARU DI TAHAP 5) -->
+            <div id="modal-events" class="modal-overlay fixed inset-0 bg-gray-900 bg-opacity-50 z-50 items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                    <!-- Header -->
+                    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                        <div>
+                            <h3 class="text-lg font-bold text-dark">Kelola Susunan Acara</h3>
+                            <p class="text-xs text-gray-500">Tambahkan Akad, Resepsi, atau Khitanan dalam satu undangan.</p>
+                        </div>
+                        <button onclick="closeEventsModal()" class="text-gray-400 hover:text-gray-600 bg-gray-200 rounded-full p-1">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Body: List Acara & Form -->
+                    <div class="p-6 overflow-y-auto flex-1">
+                        <!-- Indikator Loading Data Acara -->
+                        <div id="events-loading" class="text-center py-4 hidden">
+                            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
+                        </div>
+
+                        <!-- List Acara yang sudah ada -->
+                        <div id="events-list" class="space-y-3 mb-6">
+                            <!-- Card Acara akan muncul di sini -->
+                        </div>
+
+                        <!-- Tombol Tambah -->
+                        <button id="btn-show-event-form" class="w-full border-2 border-dashed border-primary text-primary font-medium py-3 rounded-xl hover:bg-amber-50 transition flex justify-center items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            + Tambah Acara Baru
+                        </button>
+
+                        <!-- Form Tambah Acara (Hidden secara default) -->
+                        <form id="form-add-event" class="hidden bg-gray-50 p-5 rounded-xl border border-gray-200 mt-4 space-y-4">
+                            <h4 class="font-bold text-dark border-b border-gray-200 pb-2 mb-3">Detail Acara Baru</h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">Nama Acara</label>
+                                    <input type="text" id="ev-title" placeholder="Contoh: Resepsi Pernikahan" required class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-primary outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">Jenis Acara</label>
+                                    <select id="ev-type" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-primary outline-none bg-white">
+                                        <option value="akad">Akad Nikah / Pemberkatan</option>
+                                        <option value="resepsi">Resepsi</option>
+                                        <option value="khitan">Khitanan</option>
+                                        <option value="aqiqah">Aqiqah</option>
+                                        <option value="pengajian">Pengajian / Syukuran</option>
+                                        <option value="custom">Lainnya</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal</label>
+                                    <input type="date" id="ev-date" required class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-primary outline-none">
+                                </div>
+                                <div class="flex gap-2">
+                                    <div class="w-1/2">
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Mulai</label>
+                                        <input type="time" id="ev-start" required class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-primary outline-none">
+                                    </div>
+                                    <div class="w-1/2">
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Selesai</label>
+                                        <input type="time" id="ev-end" placeholder="Selesai" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-primary outline-none">
+                                    </div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">Nama Tempat / Gedung</label>
+                                    <input type="text" id="ev-location" placeholder="Contoh: Gedung Serbaguna / Kediaman Mempelai Wanita" required class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-primary outline-none">
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end gap-2 pt-2">
+                                <button type="button" id="btn-cancel-event" class="px-4 py-2 text-sm text-gray-600 font-medium hover:bg-gray-200 rounded-md transition">Batal</button>
+                                <button type="submit" id="btn-submit-event" class="px-4 py-2 text-sm bg-primary text-white font-medium rounded-md hover:bg-amber-700 transition">Simpan Acara</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </section>
     </main>
 
     <!-- LOGIC FIREBASE & APP -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // IMPORT FIREBASE AUTH & FIRESTORE
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // ========================================================
-        // KONFIGURASI FIREBASE ANDA YANG SUDAH BENAR
+        // KONFIGURASI FIREBASE ANDA
         // ========================================================
         const firebaseConfig = {
             apiKey: "AIzaSyArNg3TnZxHJHrkRJ7bEAF4I_1Yt-r-IBY",
@@ -277,7 +343,9 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
         let currentUser = null;
+        let currentEditingInvitationId = null; // Menyimpan ID undangan yang sedang dikelola acaranya
 
         // --- ROUTING SPA ---
         const appRouter = () => {
@@ -308,7 +376,6 @@
                 document.getElementById('dash-username').innerText = user.displayName || user.email;
                 appRouter();
                 
-                // Load/Create data profil
                 const userDocRef = doc(db, "users", user.uid);
                 const docSnap = await getDoc(userDocRef);
                 if (!docSnap.exists()) {
@@ -319,8 +386,6 @@
                         createdAt: serverTimestamp()
                     });
                 }
-                
-                // Ambil daftar undangan dari database
                 fetchInvitations();
             } else {
                 appRouter();
@@ -328,7 +393,9 @@
         });
         window.addEventListener('hashchange', appRouter);
 
-        // --- CRUD UNDANGAN ---
+        // ==========================================
+        // FITUR CRUD UNDANGAN UTAMA
+        // ==========================================
         const invGrid = document.getElementById('invitation-grid');
         const emptyState = document.getElementById('empty-state');
         const loadingState = document.getElementById('loading-invitations');
@@ -343,7 +410,6 @@
             try {
                 const q = query(collection(db, "invitations"), where("userId", "==", currentUser.uid));
                 const querySnapshot = await getDocs(q);
-                
                 loadingState.classList.add('hidden');
 
                 if (querySnapshot.empty) {
@@ -351,21 +417,19 @@
                 } else {
                     invGrid.classList.remove('hidden');
                     querySnapshot.forEach((docSnap) => {
-                        const data = docSnap.data();
-                        renderInvitationCard(docSnap.id, data);
+                        renderInvitationCard(docSnap.id, docSnap.data());
                     });
                 }
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error(error);
                 loadingState.classList.add('hidden');
-                alert("Gagal memuat data undangan.");
             }
         }
 
+        // TAMPILAN KARTU UNDANGAN (DIPERBARUI)
         function renderInvitationCard(id, data) {
             const card = document.createElement('div');
-            card.className = "bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition";
-            
+            card.className = "bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col";
             let statusBadge = data.status === 'draft' ? `<span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold">DRAFT</span>` 
                             : `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">PUBLISHED</span>`;
 
@@ -374,14 +438,15 @@
                     <span class="text-gray-400 text-sm">No Cover</span>
                     <div class="absolute top-3 right-3">${statusBadge}</div>
                 </div>
-                <div class="p-5">
+                <div class="p-5 flex-1 flex flex-col">
                     <p class="text-xs text-primary font-bold uppercase tracking-wider mb-1">${data.categoryId}</p>
                     <h3 class="text-lg font-bold text-dark mb-1 truncate">${data.title}</h3>
                     <a href="https://djangkosinvitation.com/${data.slug}" target="_blank" class="text-sm text-blue-500 hover:underline block mb-4 truncate">/${data.slug}</a>
                     
-                    <div class="flex gap-2 border-t border-gray-100 pt-4 mt-2">
-                        <button class="flex-1 bg-amber-50 text-primary py-2 rounded-lg text-sm font-semibold hover:bg-amber-100 transition" onclick="alert('Fitur Builder akan dibangun di Tahap 7')">Edit</button>
-                        <button class="bg-red-50 text-red-500 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-500 hover:text-white transition" onclick="deleteInvitation('${id}')">
+                    <div class="mt-auto border-t border-gray-100 pt-4 flex gap-2">
+                        <button class="flex-1 bg-gray-50 text-gray-700 border border-gray-200 py-2 rounded-lg text-xs font-semibold hover:bg-gray-100 transition" onclick="openEventsModal('${id}')">Kelola Acara</button>
+                        <button class="flex-1 bg-amber-50 text-primary py-2 rounded-lg text-xs font-semibold hover:bg-amber-100 transition" onclick="alert('Fitur Desain Builder akan dibangun di Tahap 7')">Edit Desain</button>
+                        <button class="bg-red-50 text-red-500 px-3 py-2 rounded-lg hover:bg-red-500 hover:text-white transition" onclick="deleteInvitation('${id}')">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
                     </div>
@@ -390,6 +455,144 @@
             invGrid.appendChild(card);
         }
 
+        // ==========================================
+        // FITUR MULTI-EVENT (TAHAP 5)
+        // ==========================================
+        const modalEvents = document.getElementById('modal-events');
+        const eventsList = document.getElementById('events-list');
+        const eventForm = document.getElementById('form-add-event');
+        const btnShowEventForm = document.getElementById('btn-show-event-form');
+        const eventsLoading = document.getElementById('events-loading');
+
+        // BUKA MODAL KELOLA ACARA
+        window.openEventsModal = function(invitationId) {
+            currentEditingInvitationId = invitationId;
+            modalEvents.classList.add('active');
+            eventForm.classList.add('hidden');
+            btnShowEventForm.classList.remove('hidden');
+            loadEvents();
+        }
+
+        window.closeEventsModal = function() {
+            modalEvents.classList.remove('active');
+            currentEditingInvitationId = null;
+        }
+
+        btnShowEventForm.addEventListener('click', () => {
+            eventForm.classList.remove('hidden');
+            btnShowEventForm.classList.add('hidden');
+            eventForm.reset();
+        });
+
+        document.getElementById('btn-cancel-event').addEventListener('click', () => {
+            eventForm.classList.add('hidden');
+            btnShowEventForm.classList.remove('hidden');
+        });
+
+        // BACA DATA ACARA DARI SUB-COLLECTION 'events'
+        async function loadEvents() {
+            if (!currentEditingInvitationId) return;
+            eventsList.innerHTML = '';
+            eventsLoading.classList.remove('hidden');
+
+            try {
+                // Query sub-collection "events" di dalam dokumen undangan tertentu
+                const q = query(
+                    collection(db, "invitations", currentEditingInvitationId, "events"), 
+                    orderBy("date", "asc") // Urutkan berdasarkan tanggal
+                );
+                const querySnapshot = await getDocs(q);
+                
+                eventsLoading.classList.add('hidden');
+                
+                if (querySnapshot.empty) {
+                    eventsList.innerHTML = `<p class="text-sm text-center text-gray-400 py-4 border border-dashed border-gray-200 rounded-lg">Belum ada acara yang ditambahkan.</p>`;
+                } else {
+                    querySnapshot.forEach((docSnap) => {
+                        renderEventItem(docSnap.id, docSnap.data());
+                    });
+                }
+            } catch (error) {
+                console.error("Error loading events:", error);
+                eventsLoading.classList.add('hidden');
+            }
+        }
+
+        // RENDER ITEM ACARA DI DALAM MODAL
+        function renderEventItem(eventId, data) {
+            const item = document.createElement('div');
+            item.className = "bg-white p-4 border border-gray-200 rounded-xl shadow-sm flex justify-between items-start";
+            
+            // Format Tanggal (Sederhana)
+            const dateObj = new Date(data.date);
+            const dateStr = dateObj.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+            item.innerHTML = `
+                <div>
+                    <span class="inline-block px-2 py-0.5 bg-amber-100 text-primary text-[10px] font-bold uppercase rounded mb-1">${data.type}</span>
+                    <h4 class="font-bold text-gray-800">${data.title}</h4>
+                    <div class="text-xs text-gray-500 mt-1 space-y-0.5">
+                        <p>📅 ${dateStr}</p>
+                        <p>⏰ ${data.startTime} - ${data.endTime || 'Selesai'}</p>
+                        <p>📍 ${data.location}</p>
+                    </div>
+                </div>
+                <button class="text-red-400 hover:text-red-600 bg-red-50 p-2 rounded-lg" onclick="deleteEvent('${eventId}')">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+            `;
+            eventsList.appendChild(item);
+        }
+
+        // SIMPAN ACARA BARU KE SUB-COLLECTION
+        eventForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = document.getElementById('btn-submit-event');
+            if (!currentEditingInvitationId) return;
+
+            btnSubmit.innerHTML = "Menyimpan...";
+            btnSubmit.disabled = true;
+
+            const eventData = {
+                title: document.getElementById('ev-title').value,
+                type: document.getElementById('ev-type').value,
+                date: document.getElementById('ev-date').value,
+                startTime: document.getElementById('ev-start').value,
+                endTime: document.getElementById('ev-end').value,
+                location: document.getElementById('ev-location').value,
+                createdAt: serverTimestamp()
+            };
+
+            try {
+                await addDoc(collection(db, "invitations", currentEditingInvitationId, "events"), eventData);
+                eventForm.reset();
+                eventForm.classList.add('hidden');
+                btnShowEventForm.classList.remove('hidden');
+                loadEvents(); // Refresh list acara
+            } catch (error) {
+                console.error("Gagal menambah acara:", error);
+                alert("Gagal menyimpan acara.");
+            } finally {
+                btnSubmit.innerHTML = "Simpan Acara";
+                btnSubmit.disabled = false;
+            }
+        });
+
+        // HAPUS ACARA
+        window.deleteEvent = async function(eventId) {
+            if (confirm("Hapus acara ini?")) {
+                try {
+                    await deleteDoc(doc(db, "invitations", currentEditingInvitationId, "events", eventId));
+                    loadEvents(); // Refresh list acara
+                } catch (error) {
+                    console.error("Gagal menghapus:", error);
+                }
+            }
+        }
+
+        // ==========================================
+        // LOGIC FORM & MODAL BUAT UNDANGAN UTAMA
+        // ==========================================
         document.getElementById('form-create-invitation').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = document.getElementById('btn-submit-invitation');
@@ -397,9 +600,7 @@
             const categoryId = document.getElementById('inv-category').value;
             const slug = document.getElementById('inv-slug').value.toLowerCase().replace(/[^a-z0-9-]/g, ''); 
 
-            if (!slug) { alert("Slug tidak valid."); return; }
-            if (!currentUser) return;
-
+            if (!slug) return alert("Slug tidak valid.");
             btnSubmit.innerHTML = "Menyimpan...";
             btnSubmit.disabled = true;
 
@@ -413,12 +614,11 @@
                     createdAt: serverTimestamp(),
                     themeId: null 
                 });
-
                 closeModal();
                 document.getElementById('form-create-invitation').reset();
                 fetchInvitations();
             } catch (error) {
-                console.error("Error menambah dokumen: ", error);
+                console.error(error);
                 alert("Gagal membuat undangan.");
             } finally {
                 btnSubmit.innerHTML = "Simpan & Buat";
@@ -427,18 +627,16 @@
         });
 
         window.deleteInvitation = async function(id) {
-            if (confirm("Apakah Anda yakin ingin menghapus undangan ini secara permanen?")) {
+            if (confirm("Hapus undangan ini beserta seluruh acaranya secara permanen?")) {
                 try {
                     await deleteDoc(doc(db, "invitations", id));
                     fetchInvitations(); 
                 } catch (error) {
-                    console.error("Error deleting document: ", error);
-                    alert("Gagal menghapus undangan.");
+                    console.error(error);
                 }
             }
         }
 
-        // --- MODAL & SLUG LOGIC ---
         const modal = document.getElementById('modal-create');
         const titleInput = document.getElementById('inv-title');
         const slugInput = document.getElementById('inv-slug');
@@ -456,37 +654,18 @@
         });
 
         // --- REGISTER, LOGIN & LOGOUT LOGIC ---
-        
         document.getElementById('form-register').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            
             try {
-                // Proses pendaftaran user baru
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                
-                // Menyimpan nama ke profil Firebase Auth
-                await updateProfile(userCredential.user, { displayName: name });
-                
-                // Tidak perlu redirect manual, karena onAuthStateChanged akan langsung
-                // mendeteksi user login dan membawanya ke Dashboard.
-            } catch (error) {
-                console.error(error);
-                alert("Pendaftaran gagal: " + error.message);
-            }
+                const userCredential = await createUserWithEmailAndPassword(auth, document.getElementById('register-email').value, document.getElementById('register-password').value);
+                await updateProfile(userCredential.user, { displayName: document.getElementById('register-name').value });
+            } catch (error) { alert("Pendaftaran gagal: " + error.message); }
         });
 
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            try { 
-                await signInWithEmailAndPassword(auth, email, password); 
-            } catch (error) { 
-                alert("Login gagal. Periksa kembali email dan password."); 
-            }
+            try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value); } 
+            catch (error) { alert("Login gagal."); }
         });
         
         document.getElementById('btn-logout').addEventListener('click', async () => {
