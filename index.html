@@ -138,7 +138,6 @@
 
         <!-- HALAMAN: DASHBOARD SAAS -->
         <section id="dashboard" class="spa-view flex-view w-full min-h-screen bg-gray-50 relative">
-            <!-- Sidebar Kiri -->
             <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col fixed h-full z-10">
                 <div class="h-16 flex items-center px-6 border-b border-gray-200">
                     <a href="#dashboard" class="text-2xl font-black text-dark tracking-tighter">
@@ -159,7 +158,6 @@
                 </div>
             </aside>
 
-            <!-- Area Konten Utama -->
             <div class="flex-1 flex flex-col md:ml-64 w-full">
                 <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <h2 class="text-lg font-bold text-gray-800">Dashboard Overview</h2>
@@ -201,7 +199,7 @@
             </div>
         </section>
 
-        <!-- HALAMAN: GALERI TEMA (BARU TAHAP 6) -->
+        <!-- HALAMAN: GALERI TEMA -->
         <section id="tema" class="spa-view w-full min-h-screen bg-gray-50 relative pb-20">
             <header class="h-16 bg-white border-b border-gray-200 flex items-center px-6 sticky top-0 z-10 gap-4">
                 <a href="#dashboard" class="text-gray-500 hover:text-primary transition bg-gray-100 p-2 rounded-full">
@@ -217,6 +215,59 @@
                 </div>
                 <div id="theme-gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
             </main>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- HALAMAN: INVITATION BUILDER (BARU TAHAP 7) -->
+        <!-- ========================================== -->
+        <section id="builder" class="spa-view w-full h-screen bg-gray-100 flex flex-col overflow-hidden">
+            <!-- Top Bar Builder -->
+            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-20 shrink-0">
+                <div class="flex items-center gap-4">
+                    <a href="#dashboard" class="text-gray-500 hover:text-primary transition bg-gray-100 p-2 rounded-full">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    </a>
+                    <div>
+                        <h2 id="builder-inv-title" class="text-base font-bold text-gray-800">Editor Undangan</h2>
+                        <p class="text-xs text-gray-400">Atur section dan konten undangan Anda</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="btn-save-builder" class="bg-dark text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-800 transition shadow-sm">Simpan Perubahan</button>
+                    <button id="btn-publish-builder" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-amber-700 transition shadow-md">Publikasikan</button>
+                </div>
+            </header>
+
+            <!-- Main Split Layout (Kiri: Editor, Kanan: Preview Handphone) -->
+            <div class="flex-1 flex overflow-hidden">
+                <!-- Panel Kiri: Pengaturan Section -->
+                <aside class="w-full md:w-96 bg-white border-r border-gray-200 flex flex-col z-10 shrink-0">
+                    <div class="p-4 border-b border-gray-100 bg-gray-50">
+                        <h3 class="font-bold text-gray-700 text-sm">Konfigurasi Section</h3>
+                        <p class="text-xs text-gray-500">Aktifkan atau nonaktifkan bagian undangan</p>
+                    </div>
+                    <div id="builder-sections-list" class="p-4 space-y-3 overflow-y-auto flex-1 custom-scrollbar">
+                        <!-- List section di-generate via JS -->
+                    </div>
+                </aside>
+
+                <!-- Panel Kanan: Live Preview Smartphone Mockup -->
+                <main class="flex-1 bg-slate-100 flex items-center justify-center p-6 overflow-y-auto">
+                    <div class="w-[380px] h-[720px] bg-white rounded-[40px] shadow-2xl border-[8px] border-dark flex flex-col overflow-hidden relative">
+                        <!-- Notch HP Mockup -->
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-5 bg-dark rounded-b-xl z-30"></div>
+                        
+                        <!-- Isi Preview Undangan (Di-render Realtime) -->
+                        <div id="builder-preview-container" class="flex-1 overflow-y-auto custom-scrollbar pt-8 bg-amber-50 text-center p-6">
+                            <div class="py-12">
+                                <span class="text-xs tracking-widest uppercase text-primary font-bold">The Wedding Of</span>
+                                <h1 id="prev-title" class="text-3xl font-serif font-bold text-dark mt-2">Ahmad & Siti</h1>
+                                <p class="text-xs text-gray-500 mt-2">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
         </section>
 
         <!-- MODAL: BUAT UNDANGAN BARU -->
@@ -335,7 +386,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyArNg3TnZxHJHrkRJ7bEAF4I_1Yt-r-IBY",
@@ -355,21 +406,33 @@
         let currentEditingInvitationId = null;
 
         // --- ROUTING SPA ---
-        const appRouter = () => {
+        const appRouter = async () => {
             let hash = window.location.hash || '#home';
             if (hash === '#dashboard' && !currentUser) { window.location.hash = '#login'; return; }
             if ((hash === '#login' || hash === '#register') && currentUser) { window.location.hash = '#dashboard'; return; }
 
+            // Cek jika rute mengarah ke builder dengan format #builder?id=XYZ
+            if (hash.startsWith('#builder')) {
+                const urlParams = new URLSearchParams(hash.split('?')[1]);
+                const invId = urlParams.get('id');
+                if (invId) {
+                    await initBuilder(invId);
+                }
+            }
+
             document.querySelectorAll('.spa-view').forEach(v => v.classList.remove('active'));
-            const targetView = document.querySelector(hash);
+            
+            // Tangani target view berdasar hash (ambil sebelum tanda tanya jika ada query param)
+            let baseHash = hash.split('?')[0];
+            const targetView = document.querySelector(baseHash);
+            
             if (targetView) targetView.classList.add('active');
             else { document.querySelector('#home').classList.add('active'); window.location.hash = '#home'; }
 
             const publicNavbar = document.getElementById('public-navbar');
             const appContainer = document.getElementById('app-container');
             
-            // Sembunyikan navbar di rute internal
-            if (['#dashboard', '#builder', '#tema'].includes(hash)) {
+            if (['#dashboard', '#builder', '#tema'].includes(baseHash)) {
                 publicNavbar.style.display = 'none'; appContainer.classList.remove('pt-16');
             } else {
                 publicNavbar.style.display = 'block'; appContainer.classList.add('pt-16');
@@ -448,8 +511,9 @@
                     <a href="https://djangkosinvitation.com/${data.slug}" target="_blank" class="text-sm text-blue-500 hover:underline block mb-4 truncate">/${data.slug}</a>
                     
                     <div class="mt-auto border-t border-gray-100 pt-4 flex gap-2">
-                        <button class="flex-1 bg-gray-50 text-gray-700 border border-gray-200 py-2 rounded-lg text-xs font-semibold hover:bg-gray-100 transition" onclick="openEventsModal('${id}')">Kelola Acara</button>
-                        <button class="flex-1 bg-amber-50 text-primary py-2 rounded-lg text-xs font-semibold hover:bg-amber-100 transition" onclick="alert('Builder akan hadir di Tahap 7')">Edit Desain</button>
+                        <button class="flex-1 bg-gray-50 text-gray-700 border border-gray-200 py-2 rounded-lg text-xs font-semibold hover:bg-gray-100 transition" onclick="openEventsModal('${id}')">Acara</button>
+                        <!-- Tombol Edit Desain dialihkan ke #builder?id=... -->
+                        <a href="#builder?id=${id}" class="flex-1 bg-amber-50 text-primary py-2 rounded-lg text-xs font-semibold hover:bg-amber-100 transition text-center">Edit Desain</a>
                         <button class="bg-red-50 text-red-500 px-3 py-2 rounded-lg hover:bg-red-500 hover:text-white transition" onclick="deleteInvitation('${id}')">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
@@ -578,7 +642,104 @@
             }
         }
 
-        // --- THEME GALLERY LOGIC (TAHAP 6) ---
+        // --- INVITATION BUILDER LOGIC (TAHAP 7) ---
+        let activeBuilderId = null;
+        let defaultSections = [
+            { id: 'hero', name: 'Hero (Sampul Utama)', active: true },
+            { id: 'opening', name: 'Kata Pengantar / Pembukaan', active: true },
+            { id: 'couple', name: 'Mempelai / Pasangan', active: true },
+            { id: 'countdown', name: 'Hitung Mundur Waktu (Countdown)', active: true },
+            { id: 'events', name: 'Susunan Acara (Multi-Event)', active: true },
+            { id: 'gallery', name: 'Galeri Foto & Video', active: true },
+            { id: 'gift', name: 'Amplop / Hadiah Digital', active: true },
+            { id: 'rsvp', name: 'Buku Tamu & RSVP', active: true },
+            { id: 'closing', name: 'Penutup & Ucapan', active: true }
+        ];
+
+        async function initBuilder(invId) {
+            activeBuilderId = invId;
+            const invRef = doc(db, "invitations", invId);
+            const invSnap = await getDoc(invRef);
+            
+            if (invSnap.exists()) {
+                const data = invSnap.data();
+                document.getElementById('builder-inv-title').innerText = data.title;
+                document.getElementById('prev-title').innerText = data.title;
+                
+                // Jika di database sudah ada konfigurasi section, ambil, jika belum pakai default
+                let sectionsConfig = data.sections || defaultSections;
+                renderBuilderSections(sectionsConfig);
+            } else {
+                alert("Data undangan tidak ditemukan.");
+                window.location.hash = '#dashboard';
+            }
+        }
+
+        function renderBuilderSections(sections) {
+            const listEl = document.getElementById('builder-sections-list');
+            listEl.innerHTML = '';
+
+            sections.forEach((sec, index) => {
+                const item = document.createElement('div');
+                item.className = "bg-white p-3 rounded-xl border border-gray-200 flex items-center justify-between shadow-xs";
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold text-gray-400">#${index + 1}</span>
+                        <span class="text-sm font-semibold text-gray-700">${sec.name}</span>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer section-toggle" data-id="${sec.id}" ${sec.active ? 'checked' : ''} onchange="toggleSection('${sec.id}')">
+                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
+        window.toggleSection = function(secId) {
+            // Logika toggle aktif/nonaktif section secara lokal pada UI preview
+            const checkboxes = document.querySelectorAll('.section-toggle');
+            defaultSections = Array.from(checkboxes).map(cb => ({
+                id: cb.getAttribute('data-id'),
+                name: cb.closest('.flex').querySelector('span:nth-child(2)').innerText,
+                active: cb.checked
+            }));
+        }
+
+        // Tombol Simpan Builder
+        document.getElementById('btn-save-builder').addEventListener('click', async () => {
+            if (!activeBuilderId) return;
+            try {
+                const invRef = doc(db, "invitations", activeBuilderId);
+                await updateDoc(invRef, {
+                    sections: defaultSections,
+                    updatedAt: serverTimestamp()
+                });
+                alert("Konfigurasi section berhasil disimpan!");
+            } catch (error) {
+                console.error(error);
+                alert("Gagal menyimpan perubahan.");
+            }
+        });
+
+        // Tombol Publikasikan
+        document.getElementById('btn-publish-builder').addEventListener('click', async () => {
+            if (!activeBuilderId) return;
+            try {
+                const invRef = doc(db, "invitations", activeBuilderId);
+                await updateDoc(invRef, {
+                    status: 'published',
+                    updatedAt: serverTimestamp()
+                });
+                alert("Undangan berhasil dipublikasikan dan siap dibagikan!");
+                window.location.hash = '#dashboard';
+            } catch (error) {
+                console.error(error);
+                alert("Gagal mempublikasikan undangan.");
+            }
+        });
+
+        // --- THEME GALLERY LOGIC ---
         const themes = [
             { id: 'wedding-elegant', name: 'Elegant Gold', category: 'Wedding', color: 'Gold', img: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=400&q=80' },
             { id: 'wedding-floral', name: 'Pink Floral', category: 'Wedding', color: 'Pink', img: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=400&q=80' },
@@ -633,7 +794,8 @@
                     slug: slug,
                     status: 'draft',
                     createdAt: serverTimestamp(),
-                    themeId: 'wedding-elegant'
+                    themeId: 'wedding-elegant',
+                    sections: defaultSections
                 });
                 closeModal();
                 document.getElementById('form-create-invitation').reset();
