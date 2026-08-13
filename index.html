@@ -217,11 +217,8 @@
             </main>
         </section>
 
-        <!-- ========================================== -->
-        <!-- HALAMAN: INVITATION BUILDER (BARU TAHAP 7) -->
-        <!-- ========================================== -->
+        <!-- HALAMAN: INVITATION BUILDER & RSVP (TAHAP 7 & 8) -->
         <section id="builder" class="spa-view w-full h-screen bg-gray-100 flex flex-col overflow-hidden">
-            <!-- Top Bar Builder -->
             <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-20 shrink-0">
                 <div class="flex items-center gap-4">
                     <a href="#dashboard" class="text-gray-500 hover:text-primary transition bg-gray-100 p-2 rounded-full">
@@ -238,7 +235,6 @@
                 </div>
             </header>
 
-            <!-- Main Split Layout (Kiri: Editor, Kanan: Preview Handphone) -->
             <div class="flex-1 flex overflow-hidden">
                 <!-- Panel Kiri: Pengaturan Section -->
                 <aside class="w-full md:w-96 bg-white border-r border-gray-200 flex flex-col z-10 shrink-0">
@@ -246,23 +242,51 @@
                         <h3 class="font-bold text-gray-700 text-sm">Konfigurasi Section</h3>
                         <p class="text-xs text-gray-500">Aktifkan atau nonaktifkan bagian undangan</p>
                     </div>
-                    <div id="builder-sections-list" class="p-4 space-y-3 overflow-y-auto flex-1 custom-scrollbar">
-                        <!-- List section di-generate via JS -->
-                    </div>
+                    <div id="builder-sections-list" class="p-4 space-y-3 overflow-y-auto flex-1 custom-scrollbar"></div>
                 </aside>
 
                 <!-- Panel Kanan: Live Preview Smartphone Mockup -->
                 <main class="flex-1 bg-slate-100 flex items-center justify-center p-6 overflow-y-auto">
                     <div class="w-[380px] h-[720px] bg-white rounded-[40px] shadow-2xl border-[8px] border-dark flex flex-col overflow-hidden relative">
-                        <!-- Notch HP Mockup -->
                         <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-5 bg-dark rounded-b-xl z-30"></div>
                         
-                        <!-- Isi Preview Undangan (Di-render Realtime) -->
-                        <div id="builder-preview-container" class="flex-1 overflow-y-auto custom-scrollbar pt-8 bg-amber-50 text-center p-6">
-                            <div class="py-12">
+                        <!-- Isi Preview Undangan + RSVP (Tahap 8) -->
+                        <div id="builder-preview-container" class="flex-1 overflow-y-auto custom-scrollbar pt-8 bg-amber-50 text-center p-6 space-y-8">
+                            <div class="py-6">
                                 <span class="text-xs tracking-widest uppercase text-primary font-bold">The Wedding Of</span>
                                 <h1 id="prev-title" class="text-3xl font-serif font-bold text-dark mt-2">Ahmad & Siti</h1>
                                 <p class="text-xs text-gray-500 mt-2">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+                            </div>
+
+                            <!-- Section RSVP & Buku Tamu Preview -->
+                            <div class="bg-white p-5 rounded-2xl shadow-sm text-left border border-gray-100">
+                                <h3 class="font-bold text-gray-800 text-sm mb-3 text-center">Buku Tamu & RSVP</h3>
+                                <form id="form-rsvp-preview" class="space-y-3">
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-gray-600 mb-1">Nama Tamu</label>
+                                        <input type="text" id="rsvp-name" placeholder="Nama Anda" required class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:ring-1 focus:ring-primary">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-gray-600 mb-1">Konfirmasi Kehadiran</label>
+                                        <select id="rsvp-status" class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none bg-white">
+                                            <option value="Hadir">Hadir (Datang)</option>
+                                            <option value="Tidak Hadir">Maaf, Berhalangan</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-gray-600 mb-1">Pesan & Ucapan</label>
+                                        <textarea id="rsvp-message" rows="2" placeholder="Tulis doa restu..." required class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg outline-none focus:ring-1 focus:ring-primary"></textarea>
+                                    </div>
+                                    <button type="submit" id="btn-submit-rsvp" class="w-full bg-primary text-white text-xs py-2 rounded-lg font-bold hover:bg-amber-700 transition">Kirim Ucapan</button>
+                                </form>
+
+                                <!-- List Ucapan Masuk -->
+                                <div class="mt-6 border-t border-gray-100 pt-4">
+                                    <h4 class="text-xs font-bold text-gray-700 mb-2">Ucapan Tamu (<span id="rsvp-count">0</span>)</h4>
+                                    <div id="rsvp-comments-list" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                                        <p class="text-[11px] text-gray-400 text-center py-2">Belum ada ucapan.</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -411,7 +435,6 @@
             if (hash === '#dashboard' && !currentUser) { window.location.hash = '#login'; return; }
             if ((hash === '#login' || hash === '#register') && currentUser) { window.location.hash = '#dashboard'; return; }
 
-            // Cek jika rute mengarah ke builder dengan format #builder?id=XYZ
             if (hash.startsWith('#builder')) {
                 const urlParams = new URLSearchParams(hash.split('?')[1]);
                 const invId = urlParams.get('id');
@@ -421,8 +444,6 @@
             }
 
             document.querySelectorAll('.spa-view').forEach(v => v.classList.remove('active'));
-            
-            // Tangani target view berdasar hash (ambil sebelum tanda tanya jika ada query param)
             let baseHash = hash.split('?')[0];
             const targetView = document.querySelector(baseHash);
             
@@ -512,7 +533,6 @@
                     
                     <div class="mt-auto border-t border-gray-100 pt-4 flex gap-2">
                         <button class="flex-1 bg-gray-50 text-gray-700 border border-gray-200 py-2 rounded-lg text-xs font-semibold hover:bg-gray-100 transition" onclick="openEventsModal('${id}')">Acara</button>
-                        <!-- Tombol Edit Desain dialihkan ke #builder?id=... -->
                         <a href="#builder?id=${id}" class="flex-1 bg-amber-50 text-primary py-2 rounded-lg text-xs font-semibold hover:bg-amber-100 transition text-center">Edit Desain</a>
                         <button class="bg-red-50 text-red-500 px-3 py-2 rounded-lg hover:bg-red-500 hover:text-white transition" onclick="deleteInvitation('${id}')">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -642,7 +662,7 @@
             }
         }
 
-        // --- INVITATION BUILDER LOGIC (TAHAP 7) ---
+        // --- INVITATION BUILDER & RSVP LOGIC (TAHAP 7 & 8) ---
         let activeBuilderId = null;
         let defaultSections = [
             { id: 'hero', name: 'Hero (Sampul Utama)', active: true },
@@ -666,9 +686,9 @@
                 document.getElementById('builder-inv-title').innerText = data.title;
                 document.getElementById('prev-title').innerText = data.title;
                 
-                // Jika di database sudah ada konfigurasi section, ambil, jika belum pakai default
                 let sectionsConfig = data.sections || defaultSections;
                 renderBuilderSections(sectionsConfig);
+                loadRsvpComments(); // Muat data buku tamu RSVP
             } else {
                 alert("Data undangan tidak ditemukan.");
                 window.location.hash = '#dashboard';
@@ -697,13 +717,80 @@
         }
 
         window.toggleSection = function(secId) {
-            // Logika toggle aktif/nonaktif section secara lokal pada UI preview
             const checkboxes = document.querySelectorAll('.section-toggle');
             defaultSections = Array.from(checkboxes).map(cb => ({
                 id: cb.getAttribute('data-id'),
                 name: cb.closest('.flex').querySelector('span:nth-child(2)').innerText,
                 active: cb.checked
             }));
+        }
+
+        // SIMPAN RSVP / BUKU TAMU KE SUB-COLLECTION 'rsvp'
+        const rsvpForm = document.getElementById('form-rsvp-preview');
+        rsvpForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!activeBuilderId) return;
+
+            const btnSubmit = document.getElementById('btn-submit-rsvp');
+            btnSubmit.innerText = "Mengirim...";
+            btnSubmit.disabled = true;
+
+            const rsvpData = {
+                name: document.getElementById('rsvp-name').value,
+                status: document.getElementById('rsvp-status').value,
+                message: document.getElementById('rsvp-message').value,
+                createdAt: serverTimestamp()
+            };
+
+            try {
+                await addDoc(collection(db, "invitations", activeBuilderId, "rsvp"), rsvpData);
+                rsvpForm.reset();
+                loadRsvpComments();
+                alert("Terima kasih! Konfirmasi kehadiran & ucapan berhasil dikirim.");
+            } catch (error) {
+                console.error(error);
+                alert("Gagal mengirim ucapan.");
+            } finally {
+                btnSubmit.innerText = "Kirim Ucapan";
+                btnSubmit.disabled = false;
+            }
+        });
+
+        async function loadRsvpComments() {
+            if (!activeBuilderId) return;
+            const commentsList = document.getElementById('rsvp-comments-list');
+            const countEl = document.getElementById('rsvp-count');
+            commentsList.innerHTML = '';
+
+            try {
+                const q = query(collection(db, "invitations", activeBuilderId, "rsvp"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                countEl.innerText = querySnapshot.size;
+
+                if (querySnapshot.empty) {
+                    commentsList.innerHTML = `<p class="text-[11px] text-gray-400 text-center py-2">Belum ada ucapan.</p>`;
+                } else {
+                    querySnapshot.forEach((docSnap) => {
+                        const data = docSnap.data();
+                        const item = document.createElement('div');
+                        item.className = "bg-gray-50 p-2.5 rounded-lg border border-gray-100 text-left";
+                        
+                        let badgeColor = data.status === 'Hadir' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+
+                        item.innerHTML = `
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[11px] font-bold text-gray-800">${data.name}</span>
+                                <span class="text-[9px] px-1.5 py-0.5 rounded font-semibold ${badgeColor}">${data.status}</span>
+                            </div>
+                            <p class="text-[11px] text-gray-600 italic">"${data.message}"</p>
+                        `;
+                        commentsList.appendChild(item);
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+            }
         }
 
         // Tombol Simpan Builder
