@@ -217,7 +217,7 @@
             </main>
         </section>
 
-        <!-- HALAMAN: INVITATION BUILDER & RSVP (TAHAP 7 & 8) -->
+        <!-- HALAMAN: INVITATION BUILDER & RSVP (TAHAP 7, 8 & 9) -->
         <section id="builder" class="spa-view w-full h-screen bg-gray-100 flex flex-col overflow-hidden">
             <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-20 shrink-0">
                 <div class="flex items-center gap-4">
@@ -243,6 +243,13 @@
                         <p class="text-xs text-gray-500">Aktifkan atau nonaktifkan bagian undangan</p>
                     </div>
                     <div id="builder-sections-list" class="p-4 space-y-3 overflow-y-auto flex-1 custom-scrollbar"></div>
+
+                    <!-- TOMBOL KELOLA AMPLOP DIGITAL (TAHAP 9) -->
+                    <div class="p-4 border-t border-gray-100 bg-gray-50">
+                        <button onclick="openGiftModal()" class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-lg hover:bg-amber-50 transition text-sm flex items-center justify-center gap-2">
+                            💵 Kelola Amplop Digital
+                        </button>
+                    </div>
                 </aside>
 
                 <!-- Panel Kanan: Live Preview Smartphone Mockup -->
@@ -250,12 +257,21 @@
                     <div class="w-[380px] h-[720px] bg-white rounded-[40px] shadow-2xl border-[8px] border-dark flex flex-col overflow-hidden relative">
                         <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-5 bg-dark rounded-b-xl z-30"></div>
                         
-                        <!-- Isi Preview Undangan + RSVP (Tahap 8) -->
+                        <!-- Isi Preview Undangan + RSVP + Amplop Digital -->
                         <div id="builder-preview-container" class="flex-1 overflow-y-auto custom-scrollbar pt-8 bg-amber-50 text-center p-6 space-y-8">
                             <div class="py-6">
                                 <span class="text-xs tracking-widest uppercase text-primary font-bold">The Wedding Of</span>
                                 <h1 id="prev-title" class="text-3xl font-serif font-bold text-dark mt-2">Ahmad & Siti</h1>
                                 <p class="text-xs text-gray-500 mt-2">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+                            </div>
+
+                            <!-- PREVIEW AMPLOP DIGITAL (TAHAP 9) -->
+                            <div class="bg-white p-5 rounded-2xl shadow-sm text-left border border-gray-100">
+                                <h3 class="font-bold text-gray-800 text-sm mb-1 text-center">Amplop Digital</h3>
+                                <p class="text-[10px] text-gray-500 text-center mb-4">Doa restu Anda merupakan karunia yang sangat berarti bagi kami.</p>
+                                <div id="gift-preview-list" class="space-y-3">
+                                    <p class="text-[11px] text-gray-400 text-center py-2 italic border border-dashed rounded-lg">Belum ada rekening.</p>
+                                </div>
                             </div>
 
                             <!-- Section RSVP & Buku Tamu Preview -->
@@ -404,6 +420,46 @@
             </div>
         </div>
 
+        <!-- MODAL: KELOLA HADIAH DIGITAL (TAHAP 9) -->
+        <div id="modal-gift" class="modal-overlay fixed inset-0 bg-gray-900 bg-opacity-50 z-50 items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                    <div>
+                        <h3 class="text-lg font-bold text-dark">Kelola Amplop Digital</h3>
+                        <p class="text-xs text-gray-500">Tambahkan rekening bank atau dompet digital (Dana, Ovo, dll).</p>
+                    </div>
+                    <button onclick="closeGiftModal()" class="text-gray-400 hover:text-gray-600 bg-gray-200 rounded-full p-1">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <div class="p-6 overflow-y-auto flex-1">
+                    <div id="gift-list" class="space-y-3 mb-6">
+                        <!-- Daftar rekening muncul di sini -->
+                    </div>
+
+                    <form id="form-add-gift" class="bg-amber-50 p-5 rounded-xl border border-amber-200 space-y-4">
+                        <h4 class="font-bold text-dark text-sm border-b border-amber-200 pb-2">Tambah Rekening Baru</h4>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Bank / E-Wallet (BCA, Mandiri, DANA, dll)</label>
+                            <input type="text" id="gift-bank" placeholder="Contoh: BCA" required class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Nomor Rekening / No HP</label>
+                            <input type="text" id="gift-number" placeholder="Contoh: 1234567890" required class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Atas Nama</label>
+                            <input type="text" id="gift-name" placeholder="Contoh: Ahmad" required class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-primary outline-none">
+                        </div>
+                        <div class="flex justify-end pt-2">
+                            <button type="submit" id="btn-submit-gift" class="w-full py-2.5 text-sm bg-primary text-white font-bold rounded-md hover:bg-amber-700 transition">Simpan Rekening</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <!-- LOGIC FIREBASE & APP -->
@@ -428,6 +484,7 @@
         
         let currentUser = null;
         let currentEditingInvitationId = null;
+        let activeBuilderId = null;
 
         // --- ROUTING SPA ---
         const appRouter = async () => {
@@ -662,8 +719,7 @@
             }
         }
 
-        // --- INVITATION BUILDER & RSVP LOGIC (TAHAP 7 & 8) ---
-        let activeBuilderId = null;
+        // --- INVITATION BUILDER, RSVP, & DIGITAL GIFT (TAHAP 7, 8, & 9) ---
         let defaultSections = [
             { id: 'hero', name: 'Hero (Sampul Utama)', active: true },
             { id: 'opening', name: 'Kata Pengantar / Pembukaan', active: true },
@@ -688,7 +744,8 @@
                 
                 let sectionsConfig = data.sections || defaultSections;
                 renderBuilderSections(sectionsConfig);
-                loadRsvpComments(); // Muat data buku tamu RSVP
+                loadRsvpComments();
+                loadGiftsPreview(); // Panggil fungsi muat rekening di preview
             } else {
                 alert("Data undangan tidak ditemukan.");
                 window.location.hash = '#dashboard';
@@ -724,6 +781,111 @@
                 active: cb.checked
             }));
         }
+
+        // --- KELOLA HADIAH DIGITAL (TAHAP 9) ---
+        window.openGiftModal = function() {
+            if(!activeBuilderId) return;
+            document.getElementById('modal-gift').classList.add('active');
+            loadGiftsToModal();
+        }
+        
+        window.closeGiftModal = function() {
+            document.getElementById('modal-gift').classList.remove('active');
+        }
+
+        async function loadGiftsToModal() {
+            const giftList = document.getElementById('gift-list');
+            giftList.innerHTML = '';
+            
+            const q = query(collection(db, "invitations", activeBuilderId, "gifts"), orderBy("createdAt", "asc"));
+            const snapshot = await getDocs(q);
+            
+            if (snapshot.empty) {
+                giftList.innerHTML = `<p class="text-sm text-gray-500 text-center py-4 border border-dashed rounded-lg">Belum ada data rekening.</p>`;
+                return;
+            }
+
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                const item = document.createElement('div');
+                item.className = "flex justify-between items-center bg-white p-4 rounded-xl border border-gray-200 shadow-sm";
+                item.innerHTML = `
+                    <div>
+                        <p class="text-xs font-bold uppercase text-primary mb-1">${data.bankName}</p>
+                        <p class="text-base font-black text-gray-800">${data.accountNumber}</p>
+                        <p class="text-xs text-gray-500">a.n ${data.accountName}</p>
+                    </div>
+                    <button class="text-red-500 bg-red-50 p-2 rounded-lg hover:bg-red-100 transition" onclick="deleteGift('${docSnap.id}')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                `;
+                giftList.appendChild(item);
+            });
+        }
+
+        async function loadGiftsPreview() {
+            const previewList = document.getElementById('gift-preview-list');
+            previewList.innerHTML = '';
+            
+            const q = query(collection(db, "invitations", activeBuilderId, "gifts"), orderBy("createdAt", "asc"));
+            const snapshot = await getDocs(q);
+            
+            if(snapshot.empty){
+                previewList.innerHTML = `<p class="text-[11px] text-gray-400 text-center py-2 italic border border-dashed rounded-lg">Belum ada rekening.</p>`;
+                return;
+            }
+
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                const item = document.createElement('div');
+                item.className = "bg-gray-50 border border-gray-200 p-3 rounded-xl flex justify-between items-center";
+                item.innerHTML = `
+                    <div>
+                        <p class="text-[10px] font-bold text-primary uppercase">${data.bankName}</p>
+                        <p class="text-sm font-black text-gray-800 tracking-wider my-0.5">${data.accountNumber}</p>
+                        <p class="text-[10px] text-gray-500">a.n ${data.accountName}</p>
+                    </div>
+                    <button class="bg-gray-200 text-gray-700 text-[10px] font-bold px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition" onclick="alert('Nomor disalin!')">Salin</button>
+                `;
+                previewList.appendChild(item);
+            });
+        }
+
+        document.getElementById('form-add-gift').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-gift'); 
+            btn.innerText = 'Menyimpan...'; 
+            btn.disabled = true;
+
+            const giftData = {
+                bankName: document.getElementById('gift-bank').value, 
+                accountNumber: document.getElementById('gift-number').value,
+                accountName: document.getElementById('gift-name').value, 
+                createdAt: serverTimestamp()
+            };
+
+            try {
+                await addDoc(collection(db, "invitations", activeBuilderId, "gifts"), giftData);
+                document.getElementById('form-add-gift').reset(); 
+                loadGiftsToModal(); 
+                loadGiftsPreview();
+            } catch (error) {
+                console.error(error);
+                alert("Gagal menyimpan rekening.");
+            } finally {
+                btn.innerText = 'Simpan Rekening'; 
+                btn.disabled = false;
+            }
+        });
+
+        window.deleteGift = async function(id) { 
+            if(confirm("Hapus rekening ini?")) {
+                await deleteDoc(doc(db, "invitations", activeBuilderId, "gifts", id)); 
+                loadGiftsToModal(); 
+                loadGiftsPreview(); 
+            }
+        }
+
 
         // SIMPAN RSVP / BUKU TAMU KE SUB-COLLECTION 'rsvp'
         const rsvpForm = document.getElementById('form-rsvp-preview');
