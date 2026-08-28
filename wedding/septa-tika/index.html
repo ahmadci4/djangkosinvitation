@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- META TAGS STANDAR -->
     <title>Wedding of Septa & Tika</title>
+    <meta name="description" content="Undangan Pernikahan Septa & Tika. Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir memeriahkan hari bahagia kami.">
+
+    <!-- META TAGS KHUSUS PREVIEW WHATSAPP & SOSMED (OPEN GRAPH) -->
+    <!-- WAJIB URL PENUH (ABSOLUT) AGAR FOTO TERBACA OLEH WHATSAPP -->
+    <meta property="og:title" content="Wedding of Septa & Tika" />
+    <meta property="og:description" content="Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk hadir pada acara pernikahan kami." />
+    <meta property="og:image" itemprop="image" content="https://djangkosinvitation.com/wedding/septa-tika/images/cover.jpeg" />
+    <meta property="og:url" content="https://djangkosinvitation.com/wedding/septa-tika/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="800" />
+    <meta property="og:image:height" content="800" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,32 +86,27 @@
         
         .masonry-item img {
             width: 100%; height: auto; display: block;
-            opacity: 0; filter: blur(15px); /* Mulai dari blur dan tak terlihat */
+            opacity: 0; filter: blur(15px);
             transform-origin: center;
             will-change: transform, filter, opacity;
         }
 
-        /* Foto Ganjil: Muncul -> Blur Hilang -> Zoom In (100 ke 108%) -> Geser Kanan */
-        .masonry-item:nth-child(odd).visible img {
-            animation: cinematicOdd 15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
+        /* Foto Ganjil: Muncul -> Blur Hilang -> Zoom In -> Geser Kanan */
+        .masonry-item:nth-child(odd).visible img { animation: cinematicOdd 15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
         @keyframes cinematicOdd {
             0% { opacity: 0; filter: blur(15px) brightness(0.7); transform: scale(1) translateX(0); }
-            10% { opacity: 1; filter: blur(0px) brightness(0.9) contrast(1.1); transform: scale(1.02) translateX(1%); } /* Crossfade Selesai */
-            100% { opacity: 1; filter: blur(0px) brightness(0.9) contrast(1.1); transform: scale(1.08) translateX(4%); } /* Berjalan Lambat */
+            10% { opacity: 1; filter: blur(0px) brightness(0.9) contrast(1.1); transform: scale(1.02) translateX(1%); }
+            100% { opacity: 1; filter: blur(0px) brightness(0.9) contrast(1.1); transform: scale(1.08) translateX(4%); }
         }
 
-        /* Foto Genap: Muncul -> Blur Hilang -> Zoom Out (108 ke 100%) -> Geser Kiri */
-        .masonry-item:nth-child(even).visible img {
-            animation: cinematicEven 15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
+        /* Foto Genap: Muncul -> Blur Hilang -> Zoom Out -> Geser Kiri */
+        .masonry-item:nth-child(even).visible img { animation: cinematicEven 15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
         @keyframes cinematicEven {
             0% { opacity: 0; filter: blur(15px) brightness(0.7); transform: scale(1.08) translateX(4%); }
-            10% { opacity: 1; filter: blur(0px) brightness(0.9) contrast(1.1); transform: scale(1.06) translateX(3%); } /* Crossfade Selesai */
-            100% { opacity: 1; filter: blur(0px) brightness(0.9) contrast(1.1); transform: scale(1) translateX(0); } /* Berjalan Lambat */
+            10% { opacity: 1; filter: blur(0px) brightness(0.9) contrast(1.1); transform: scale(1.06) translateX(3%); }
+            100% { opacity: 1; filter: blur(0px) brightness(0.9) contrast(1.1); transform: scale(1) translateX(0); }
         }
 
-        /* Interaksi saat disentuh kembali terang 100% */
         .masonry-item:hover img, .masonry-item:active img { filter: brightness(1.1) contrast(1) !important; transition: filter 0.5s ease; }
 
         /* Musik & Menu UI */
@@ -158,7 +167,7 @@
                 </div>
 
                 <button id="btn-open-invitation" class="btn-modern w-full flex items-center justify-center gap-2 mx-auto">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"></path></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 10l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"></path></svg>
                     Buka Undangan
                 </button>
             </div>
@@ -216,7 +225,6 @@
                 </div>
 
                 <div class="space-y-16">
-                    <!-- Tiap blok reveal akan memicu animasi teks di dalamnya -->
                     <div class="reveal relative border-l-2 border-brand-accent/40 pl-8 pb-4">
                         <div class="absolute -left-[21px] top-0 w-10 h-10 rounded-full bg-brand-dark border-2 border-brand-accent flex items-center justify-center text-brand-accent shadow-lg">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
@@ -335,9 +343,7 @@
                     <p class="font-sans text-[10px] font-bold uppercase tracking-widest text-brand-accent">Rekam Jejak Kasih</p>
                 </div>
 
-                <!-- Struktur 19 Foto sesuai instruksi, dikemas dalam efek reveal observer -->
                 <div class="masonry-gallery px-2">
-                    <!-- Class .reveal di masonry-item untuk mendeteksi scroll dan memicu animasi gambar di dalamnya -->
                     <div class="masonry-item reveal"><img src="images/foto1.jpeg" loading="lazy" alt="Gallery"></div>
                     <div class="masonry-item reveal"><img src="images/foto3.jpeg" loading="lazy" alt="Gallery"></div>
                     <div class="masonry-item reveal"><img src="images/foto4.jpeg" loading="lazy" alt="Gallery"></div>
@@ -370,7 +376,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <!-- BNI Sartika -->
                     <div class="reveal bg-brand-card/80 backdrop-blur-md p-6 rounded-[30px] shadow-2xl border border-brand-accent/30 text-center flex flex-col justify-between">
                         <div>
                             <p class="font-sans text-[10px] uppercase tracking-widest text-brand-accent mb-2 font-bold">Bank BNI</p>
@@ -382,7 +387,6 @@
                         </button>
                     </div>
 
-                    <!-- BRI L Septa -->
                     <div class="reveal bg-brand-card/80 backdrop-blur-md p-6 rounded-[30px] shadow-2xl border border-brand-accent/30 text-center flex flex-col justify-between" style="transition-delay: 200ms;">
                         <div>
                             <p class="font-sans text-[10px] uppercase tracking-widest text-brand-accent mb-2 font-bold">Bank BRI</p>
@@ -525,7 +529,7 @@
             snapshot.forEach((doc) => {
                 const data = doc.data();
                 const newComment = document.createElement('div');
-                newComment.className = 'bg-brand-card p-5 rounded-2xl border border-white/10 reveal visible'; /* Tambah .visible agar langsung terlihat saat di-load */
+                newComment.className = 'bg-brand-card p-5 rounded-2xl border border-white/10 reveal visible'; 
                 newComment.style.transform = 'translateY(0)';
                 newComment.style.filter = 'blur(0)';
 
@@ -584,8 +588,8 @@
             }
         });
 
-        // --- STREAMING_CHUNK:Finalizing Observers and Interactions... ---
-        // Sapaan Tamu Dinamis
+        // --- SISTEM OBSERVER & INTERAKSI ---
+        
         const urlParams = new URLSearchParams(window.location.search);
         const guestName = urlParams.get('to');
         if (guestName) {
@@ -594,7 +598,6 @@
             document.getElementById('form-name').value = decodedName;
         }
 
-        // Musik, Cover Animasi, & Bunga
         const btnOpen = document.getElementById('btn-open-invitation');
         const coverPage = document.getElementById('cover-page');
         const bgMusic = document.getElementById('bg-music');
@@ -636,7 +639,6 @@
             document.body.classList.add('overflow-hidden');
         }
 
-        // Smart Menu Logic
         let scrollTimeout;
         const smartMenu = document.getElementById('smart-menu');
         window.addEventListener('scroll', () => {
@@ -650,7 +652,6 @@
             }, 600);
         });
 
-        // Countdown Realtime
         const countDownDate = new Date("Sep 05, 2026 08:00:00").getTime();
         const timer = setInterval(function() {
             const now = new Date().getTime();
@@ -668,11 +669,8 @@
             document.getElementById("cd-seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
         }, 1000);
 
-        // --- SISTEM OBSERVER: Animasi Teks Ketik & Fade Up Element ---
-        
-        // 1. Fungsi Animasi Ketik Huruf (Berjalan setelah elemen terlihat di layar)
         function typeWriterEffect(element) {
-            if (element.classList.contains('typed')) return; // Cegah diulang jika sudah
+            if (element.classList.contains('typed')) return; 
             
             const text = element.getAttribute('data-text');
             element.innerHTML = '';
@@ -685,7 +683,7 @@
                     const span = document.createElement('span');
                     span.textContent = text[i];
                     if(text[i] === ' ') span.innerHTML = '&nbsp;';
-                    span.style.animationDelay = `${delay * 0.03}s`; // Durasi ketik 0.03 detik per huruf
+                    span.style.animationDelay = `${delay * 0.03}s`;
                     span.className = 'letter-anim inline-block';
                     element.appendChild(span);
                     delay++;
@@ -694,32 +692,25 @@
             element.classList.add('typed');
         }
 
-        // 2. Observer Utama (Mendeteksi saat elemen masuk ke layar / di-scroll)
         const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const el = entry.target;
                     
-                    // A. Munculkan elemen (efek fade up dan blur hilang)
                     el.classList.add('visible');
                     
-                    // B. Jika di dalam elemen tersebut ada teks untuk diketik, jalankan fungsi ketik
                     const typeTextElement = el.querySelector('.type-text');
                     if(typeTextElement) {
-                        // Beri sedikit jeda (300ms) agar kotak fade-up dulu, baru teks mengetik
                         setTimeout(() => { typeWriterEffect(typeTextElement); }, 300);
                     } else if (el.classList.contains('type-text')) {
-                        // Jika elemen itu sendiri adalah type-text
                         setTimeout(() => { typeWriterEffect(el); }, 300);
                     }
                     
-                    // Hentikan observer untuk elemen ini agar tidak mengulang animasi saat di scroll balik
                     obs.unobserve(el);
                 }
             });
-        }, { threshold: 0.15 }); // Akan trigger saat 15% elemen sudah masuk layar
+        }, { threshold: 0.15 });
 
-        // Daftarkan semua elemen berkelas 'reveal' (termasuk galeri) ke dalam Observer
         document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
     </script>
 </body>
