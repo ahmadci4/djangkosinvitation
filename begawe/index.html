@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Menggawe - Egi & Yopi</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#5c3a21',
+                            medium: '#8c5a35',
+                            light: '#e8dbce',
+                            bg: '#fcf8f2',
+                            accent: '#d4a373',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Cinzel', 'serif'],
+                    },
+                    backgroundImage: {
+                        'islamic-pattern': "url('data:image/svg+xml,%3Csvg width=\\'60\\' height=\\'60\\' viewBox=\\'0 0 60 60\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'none\\' fill-rule=\\'evenodd\\'%3E%3Cg fill=\\'%238c5a35\\' fill-opacity=\\'0.08\\'%3E%3Cpath d=\\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; background-color: #fcf8f2; }
+        body { color: #5c3a21; overflow-x: hidden; background-color: #fcf8f2; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .reveal { opacity: 0; transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .fade-up { transform: translateY(40px); }
+        .fade-in { transform: scale(0.95); }
+        .visible { opacity: 1; transform: translate(0) scale(1); }
+
+        .arch-container {
+            border-radius: 120px 120px 0 0;
+            position: relative;
+        }
+        
+        .arch-border {
+            clip-path: polygon(50% 0%, 100% 20%, 100% 100%, 0 100%, 0 20%);
+            border-top-left-radius: 50% 100px;
+            border-top-right-radius: 50% 100px;
+        }
+
+        .lantern {
+            animation: swing 4s ease-in-out infinite alternate;
+            transform-origin: top center;
+        }
+        @keyframes swing {
+            0% { transform: rotate(-5deg); }
+            100% { transform: rotate(5deg); }
+        }
+
+        .btn-primary {
+            background-color: #5c3a21;
+            color: #fcf8f2;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:active { transform: scale(0.95); background-color: #8c5a35; }
+
+        /* Perbaikan: Animasi Cover menggunakan Opacity & Transform agar lebih ringan */
+        #cover-page { transition: opacity 0.8s ease, transform 0.8s ease; }
+        .cover-opened { opacity: 0; transform: translateY(-20px); pointer-events: none; }
+
+        #audio-control { animation: pulseShadow 2s infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulseShadow { 0% { box-shadow: 0 0 0 0 rgba(140, 90, 53, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(140, 90, 53, 0); } 100% { box-shadow: 0 0 0 0 rgba(140, 90, 53, 0); } }
+        .spinning { animation: spin 4s linear infinite; }
+    </style>
+</head>
+<!-- Perbaikan: Kunci scroll (overflow-hidden) dipasang di body agar background tidak bocor -->
+<body class="antialiased font-sans bg-brand-bg bg-islamic-pattern overflow-hidden">
+
+    <!-- Musik Latar -->
+    <audio id="bg-music" loop>
+        <source src="music/Gending-Budaye-Sasak.mp3" type="audio/mpeg"> 
+    </audio>
+
+    <button id="audio-control" class="fixed top-4 right-4 z-50 bg-brand-light/90 backdrop-blur p-2.5 rounded-full border border-brand-medium/30 hidden shadow-lg">
+        <svg id="audio-icon" class="w-5 h-5 text-brand-dark spinning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+    </button>
+
+    <div class="w-full max-w-[480px] mx-auto bg-brand-bg bg-islamic-pattern min-h-screen relative shadow-2xl border-x border-brand-light/50">
+
+        <div id="cover-page" class="fixed inset-0 z-[100] w-full max-w-[480px] mx-auto bg-brand-dark flex flex-col items-center justify-between overflow-hidden">
+            
+            <!-- Background Image -->
+            <div class="absolute inset-0 z-0">
+                <img src="images/egi-yopi.jpeg" alt="Cover" class="w-full h-full object-cover opacity-60">
+                <div class="absolute inset-0 bg-gradient-to-b from-brand-dark/80 via-brand-dark/40 to-brand-dark/90"></div>
+            </div>
+
+            <!-- Konten Atas -->
+            <div class="relative z-10 w-full text-center pt-20 px-6">
+                <p class="font-sans text-[10px] md:text-xs text-brand-light uppercase tracking-[0.2em] mb-4 leading-relaxed">
+                    Menggawe Sunatan, Memolak,<br>Mengkurisan dan Tampah Wirang
+                </p>
+                <h1 class="font-serif text-3xl md:text-4xl text-white tracking-widest uppercase mb-2">
+                    Buah Hati Kami
+                </h1>
+                <div class="w-16 h-0.5 bg-brand-accent mx-auto my-4"></div>
+                <h2 class="font-serif text-4xl text-brand-accent drop-shadow-md">Egi & Yopi</h2>
+            </div>
+
+            <div class="flex-grow"></div>
+
+            <!-- Konten Bawah -->
+            <div class="relative z-10 w-full text-center pb-16 px-6">
+                <div class="mb-8">
+                    <p class="font-sans text-[10px] text-gray-300 mb-1">Kepada Yth.</p>
+                    <h3 id="display-guest-name" class="font-serif text-2xl text-white font-bold drop-shadow-sm uppercase">Tamu Undangan</h3>
+                    <p class="font-sans text-[10px] text-gray-300 italic mt-1">Di Tempat</p>
+                </div>
+
+                <button id="btn-open-invitation" class="bg-brand-medium text-white px-8 py-3.5 rounded-full font-sans text-xs font-bold uppercase tracking-widest shadow-[0_4px_15px_rgba(0,0,0,0.3)] hover:bg-brand-dark border border-brand-accent/50 transition-all flex items-center justify-center gap-2 mx-auto">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"></path></svg>
+                    Buka Undangan
+                </button>
+            </div>
+        </div>
+
+        <div id="main-content" class="relative z-10">
+
+            <!-- HEADER / MENU -->
+            <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm py-3 px-2 flex justify-around border-b border-brand-light">
+                <a href="#sec-profil" class="font-sans text-[9px] uppercase font-bold text-brand-medium hover:text-brand-dark">Anak Kami</a>
+                <a href="#sec-acara" class="font-sans text-[9px] uppercase font-bold text-brand-medium hover:text-brand-dark">Acara</a>
+                <a href="#sec-galeri" class="font-sans text-[9px] uppercase font-bold text-brand-medium hover:text-brand-dark">Galeri</a>
+                <a href="#sec-rsvp" class="font-sans text-[9px] uppercase font-bold text-brand-medium hover:text-brand-dark">Ucapan</a>
+            </nav>
+
+            <!-- 1. PROFIL ANAK -->
+            <section id="sec-profil" class="py-16 px-6 relative overflow-hidden">
+                <img src="https://cdn-icons-png.flaticon.com/512/3067/3067468.png" class="absolute top-4 left-4 w-8 opacity-40 lantern" alt="lantern">
+                <img src="https://cdn-icons-png.flaticon.com/512/3067/3067468.png" class="absolute top-4 right-4 w-8 opacity-40 lantern" alt="lantern" style="animation-delay: 1s;">
+
+                <div class="reveal fade-up bg-white rounded-3xl p-8 text-center shadow-[0_10px_30px_rgba(92,58,33,0.08)] border border-brand-light mt-8 relative z-10">
+                    <h2 class="font-serif text-2xl text-brand-dark font-bold mb-8">Buah Hati Kami</h2>
+                    
+                    <div class="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-brand-light p-1 mb-8 bg-brand-bg shadow-inner">
+                        <img src="images/egi-yopi.jpeg" class="w-full h-full object-cover rounded-full" alt="Anak">
+                    </div>
+
+                    <h3 class="font-serif text-3xl text-brand-dark uppercase tracking-wider mb-2">Egi Pratama</h3>
+                    <h3 class="font-serif text-3xl text-brand-dark uppercase tracking-wider mb-6">& Yopi Lukman</h3>
+                    
+                    <div class="h-px w-24 bg-brand-accent mx-auto mb-6"></div>
+                    
+                    <p class="font-sans text-[10px] uppercase tracking-widest text-brand-medium mb-1">Putra Dari</p>
+                    <p class="font-serif text-base text-brand-dark font-semibold">Keluarga Bapak Irwan<br>& Ibu Ega Aprilia</p>
+                </div>
+            </section>
+
+            <section id="sec-acara" class="pt-8 pb-16 px-6 text-center">
+                <div class="reveal fade-up mb-12">
+                    <h2 class="font-serif text-xl text-brand-dark uppercase tracking-[0.1em] leading-relaxed px-4">
+                        Sunatan, Memolak, Mengkurisan<br>Dan Tampah Wirang
+                    </h2>
+                    
+                    <!-- Countdown Element -->
+                    <div class="flex justify-center gap-4 mt-8">
+                        <div>
+                            <div id="cd-days" class="font-serif text-3xl text-brand-dark">00</div>
+                            <div class="font-sans text-[10px] font-bold text-brand-medium uppercase">Hari</div>
+                        </div>
+                        <div>
+                            <div id="cd-hours" class="font-serif text-3xl text-brand-dark">00</div>
+                            <div class="font-sans text-[10px] font-bold text-brand-medium uppercase">Jam</div>
+                        </div>
+                        <div>
+                            <div id="cd-minutes" class="font-serif text-3xl text-brand-dark">00</div>
+                            <div class="font-sans text-[10px] font-bold text-brand-medium uppercase">Menit</div>
+                        </div>
+                        <div>
+                            <div id="cd-seconds" class="font-serif text-3xl text-brand-dark">00</div>
+                            <div class="font-sans text-[10px] font-bold text-brand-medium uppercase">Detik</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal fade-in bg-white p-8 border-2 border-brand-medium shadow-lg arch-border relative z-10 pt-16 pb-12 mt-10">
+                    <h3 class="font-serif text-2xl text-brand-dark mb-6">GAWE ADAT</h3>
+                    
+                    <p class="font-sans text-sm text-brand-medium font-medium mb-2">Rabu & Kamis,<br>2 - 3 September 2026</p>
+                    <p class="font-sans text-sm text-brand-medium mb-6">Mulai Pukul 09.00 WITA - Selesai</p>
+                    
+                    <div class="w-12 h-px bg-brand-medium mx-auto mb-6"></div>
+                    
+                    <p class="font-sans text-sm text-brand-dark font-bold uppercase tracking-wider mb-1">Tanak Petak Lauk</p>
+                    <p class="font-sans text-xs text-brand-medium leading-relaxed mb-8">
+                        Desa Loloan<br>Kecamatan Bayan
+                    </p>
+
+                    <a href="https://maps.google.com" target="_blank" class="block w-full py-3 mb-3 bg-brand-dark text-white rounded-lg font-sans text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 hover:bg-brand-medium transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Buka Map
+                    </a>
+                </div>
+            </section>
+
+            <section id="sec-galeri" class="py-16 bg-brand-dark text-white relative">
+                <img src="https://cdn-icons-png.flaticon.com/512/3067/3067468.png" class="absolute -top-6 left-1/4 w-10 opacity-70 lantern" style="filter: brightness(200%) sepia(100%) hue-rotate(10deg);" alt="lantern">
+                <img src="https://cdn-icons-png.flaticon.com/512/3067/3067468.png" class="absolute -top-6 right-1/4 w-10 opacity-70 lantern" style="filter: brightness(200%) sepia(100%) hue-rotate(10deg); animation-delay: 0.5s;" alt="lantern">
+
+                <div class="reveal fade-up text-center mb-10 pt-4">
+                    <h2 class="font-serif text-3xl font-bold">Galeri</h2>
+                </div>
+
+                <div class="reveal fade-up flex overflow-x-auto gap-4 px-6 pb-8 snap-x no-scrollbar">
+                    <div class="shrink-0 w-64 h-80 snap-center rounded-2xl overflow-hidden shadow-lg border border-white/20 relative">
+                        <img src="images/egi-pratama.jpeg" class="w-full h-full object-cover" alt="Galeri">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    </div>
+                    <div class="shrink-0 w-64 h-80 snap-center rounded-2xl overflow-hidden shadow-lg border border-white/20 relative">
+                        <img src="images/yopi-lukman.jpeg" class="w-full h-full object-cover" alt="Galeri">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    </div>
+                    <div class="shrink-0 w-64 h-80 snap-center rounded-2xl overflow-hidden shadow-lg border border-white/20 relative">
+                        <img src="images/egi-pratama.jpeg" class="w-full h-full object-cover" alt="Galeri">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    </div>
+                    <div class="shrink-0 w-64 h-80 snap-center rounded-2xl overflow-hidden shadow-lg border border-white/20 relative">
+                        <img src="images/yopi-lukman.jpeg" class="w-full h-full object-cover" alt="Galeri">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    </div>
+                </div>
+                <p class="text-center text-[10px] text-white/50 uppercase tracking-widest"><- Geser -></p>
+            </section>
+
+            <section class="py-16 px-6 bg-brand-medium text-white text-center">
+                <div class="reveal fade-in border-2 border-white/40 p-6 pt-12 pb-10 arch-border">
+                    <p class="font-sans text-xs leading-relaxed uppercase tracking-widest font-semibold mb-8">
+                        Dengan ini kami<br>bermaksud mengundang<br>Bapak/Ibu ke acara Gawe<br>
+                        Sunatan, Memolak,<br>Mengkurisan dan Tampah<br>Wirang Duduk Bersila<br>
+                        Bersama di rumah kami<br>Dusun Tanak Petak Lauk<br>Kami berharap Bapak/Ibu<br>
+                        berkenan menghadiri<br>acara kami
+                    </p>
+                    <p class="font-sans text-[9px] uppercase tracking-widest text-white/70">
+                        Kami Yang Berbahagia
+                    </p>
+                </div>
+            </section>
+
+            <section id="sec-rsvp" class="py-16 px-6 bg-brand-dark text-white relative">
+                <img src="https://cdn-icons-png.flaticon.com/512/3067/3067468.png" class="absolute top-10 left-2 w-12 opacity-80 lantern" style="filter: brightness(200%) sepia(100%) hue-rotate(10deg);" alt="lantern">
+                <img src="https://cdn-icons-png.flaticon.com/512/3067/3067468.png" class="absolute top-10 right-2 w-12 opacity-80 lantern" style="filter: brightness(200%) sepia(100%) hue-rotate(10deg); animation-delay: 1.2s;" alt="lantern">
+
+                <div class="reveal fade-up bg-white rounded-t-[60px] rounded-b-2xl p-8 pt-12 shadow-xl mt-8">
+                    <h2 class="font-serif text-3xl text-brand-dark text-center font-bold mb-8">Buku Tamu</h2>
+                    
+                    <form id="rsvp-form" class="space-y-5 text-brand-dark text-left">
+                        <div>
+                            <label class="block font-sans text-xs font-semibold mb-1">Nama *</label>
+                            <input type="text" id="form-name" required placeholder="Masukkan nama anda..." class="w-full px-4 py-3 border border-brand-medium/40 rounded-lg outline-none focus:border-brand-dark text-sm bg-brand-bg/50">
+                        </div>
+                        <div>
+                            <label class="block font-sans text-xs font-semibold mb-2">Bersedia hadir di acara kami? *</label>
+                            <div class="flex gap-4">
+                                <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                    <input type="radio" name="attendance" value="Ya" checked class="w-4 h-4 text-brand-dark bg-gray-100 border-gray-300 focus:ring-brand-dark"> Ya
+                                </label>
+                                <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                    <input type="radio" name="attendance" value="Tidak" class="w-4 h-4 text-brand-dark bg-gray-100 border-gray-300 focus:ring-brand-dark"> Tidak
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-sans text-xs font-semibold mb-1">Pesan Untuk Buah Hati Kami *</label>
+                            <textarea id="form-message" rows="4" required placeholder="Masukkan ucapan anda..." class="w-full px-4 py-3 border border-brand-medium/40 rounded-lg outline-none focus:border-brand-dark text-sm bg-brand-bg/50 resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-3.5 bg-brand-dark text-white rounded-lg font-sans text-xs font-bold uppercase tracking-widest hover:bg-brand-medium transition shadow-md">
+                            Kirim Ucapan
+                        </button>
+                    </form>
+
+                    <!-- Area Komentar Masuk -->
+                    <div class="mt-10 pt-6 border-t border-brand-light">
+                        <h4 class="font-sans text-xs uppercase font-bold text-brand-dark mb-4 text-center">Daftar Ucapan (<span id="count-ucapan">0</span>)</h4>
+                        <div id="comments-container" class="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+                            <p id="empty-comment" class="text-xs text-brand-medium text-center italic py-2">Memuat ucapan...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <footer class="bg-brand-dark text-center py-6 border-t border-white/10">
+                 <p class="font-sans text-[9px] text-white/50 tracking-widest uppercase font-semibold">
+                    Dibuat oleh <a href="https://www.djangkos.com" target="_blank" class="text-brand-accent hover:text-white transition">www.djangkos.com</a>
+                </p>
+            </footer>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- KONFIGURASI FIREBASE ---
+        // Ganti dengan konfigurasi dari console Firebase Abang
+        const firebaseConfig = {
+            apiKey: "API_KEY_ABANG",
+            authDomain: "PROJECT_ID.firebaseapp.com",
+            projectId: "PROJECT_ID",
+            storageBucket: "PROJECT_ID.firebasestorage.app",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- LOGIKA COVER & MUSIK ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const guestName = urlParams.get('invite') || urlParams.get('to');
+        if (guestName) {
+            const decodedName = decodeURIComponent(guestName).replace(/\+/g, ' ');
+            document.getElementById('display-guest-name').innerText = decodedName;
+            document.getElementById('form-name').value = decodedName;
+        }
+
+        const btnOpen = document.getElementById('btn-open-invitation');
+        const coverPage = document.getElementById('cover-page');
+        const bgMusic = document.getElementById('bg-music');
+        const audioBtn = document.getElementById('audio-control');
+        const audioIcon = document.getElementById('audio-icon');
+        let isPlaying = false;
+
+        btnOpen.addEventListener('click', () => {
+            coverPage.classList.add('cover-opened');
+            
+            // Melepas kunci scroll setelah undangan dibuka
+            document.body.classList.remove('overflow-hidden');
+
+            setTimeout(() => { 
+                audioBtn.classList.remove('hidden'); 
+                // Hilangkan cover dari DOM agar tidak menutupi klik di belakangnya
+                setTimeout(() => { coverPage.style.display = 'none'; }, 800);
+            }, 800);
+            
+            bgMusic.play().then(() => { isPlaying = true; audioIcon.classList.add('spinning'); }).catch(e => console.log("Auto-play diblokir"));
+            window.scrollTo(0, 0);
+        });
+
+        audioBtn.addEventListener('click', () => {
+            if (isPlaying) { bgMusic.pause(); audioIcon.classList.remove('spinning'); } 
+            else { bgMusic.play(); audioIcon.classList.add('spinning'); }
+            isPlaying = !isPlaying;
+        });
+
+        // --- ANIMASI SCROLL ---
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+
+        // --- HITUNG MUNDUR (COUNTDOWN) REALTIME ---
+        // Tanggal Acara: 2 September 2026 jam 09:00 pagi
+        const countDownDate = new Date("Sep 2, 2026 09:00:00").getTime();
+        
+        const timer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+            
+            // Jika waktu sudah lewat
+            if (distance < 0) {
+                clearInterval(timer);
+                document.getElementById("cd-days").innerText = "00";
+                document.getElementById("cd-hours").innerText = "00";
+                document.getElementById("cd-minutes").innerText = "00";
+                document.getElementById("cd-seconds").innerText = "00";
+                return;
+            }
+            
+            // Kalkulasi matematika waktu & tambahkan '0' di depan jika 1 digit
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            
+            document.getElementById("cd-days").innerText = days;
+            document.getElementById("cd-hours").innerText = hours;
+            document.getElementById("cd-minutes").innerText = minutes;
+            document.getElementById("cd-seconds").innerText = seconds;
+        }, 1000);
+
+
+        // --- SISTEM BUKU TAMU FIREBASE (REALTIME) ---
+        const rsvpForm = document.getElementById('rsvp-form');
+        const commentsContainer = document.getElementById('comments-container');
+        const countUcapan = document.getElementById('count-ucapan');
+
+        // 1. Membaca Data Realtime
+        // PERHATIAN: Nama koleksi diubah menjadi 'ucapan_begawe' agar tidak tercampur dengan undangan nikah
+        const q = query(collection(db, "ucapan_begawe"), orderBy("timestamp", "desc"));
+        
+        onSnapshot(q, (snapshot) => {
+            commentsContainer.innerHTML = ''; 
+            countUcapan.innerText = snapshot.size;
+
+            if (snapshot.empty) {
+                commentsContainer.innerHTML = '<p id="empty-comment" class="text-xs text-brand-medium text-center italic py-2">Belum ada ucapan. Jadilah yang pertama!</p>';
+                return;
+            }
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const newComment = document.createElement('div');
+                newComment.className = 'bg-brand-bg p-4 rounded-xl border border-brand-light reveal fade-up visible';
+                
+                const badgeColor = data.status === 'Ya' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+                const statusText = data.status === 'Ya' ? 'Hadir' : 'Tidak Hadir';
+
+                newComment.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <h5 class="font-bold text-xs text-brand-dark">${data.name}</h5>
+                        <span class="text-[9px] px-2 py-0.5 rounded uppercase font-bold ${badgeColor}">${statusText}</span>
+                    </div>
+                    <p class="font-sans text-[11px] text-brand-medium italic leading-relaxed">"${data.message}"</p>
+                `;
+                commentsContainer.appendChild(newComment);
+            });
+        });
+
+        // 2. Mengirim Data ke Firebase
+        rsvpForm.addEventListener('submit', async function(e) {
+            e.preventDefault(); 
+            
+            const btnSubmit = e.target.querySelector('button[type="submit"]');
+            const originalText = btnSubmit.innerText;
+            btnSubmit.innerText = "MENGIRIM...";
+            btnSubmit.disabled = true;
+
+            const name = document.getElementById('form-name').value;
+            const status = document.querySelector('input[name="attendance"]:checked').value;
+            const message = document.getElementById('form-message').value;
+
+            try {
+                await addDoc(collection(db, "ucapan_begawe"), {
+                    name: name,
+                    status: status,
+                    message: message,
+                    timestamp: serverTimestamp()
+                });
+                
+                rsvpForm.reset();
+                if(guestName) document.getElementById('form-name').value = decodeURIComponent(guestName).replace(/\+/g, ' '); 
+                alert("Terima kasih, ucapan Anda telah terkirim!");
+            } catch (error) {
+                console.error("Error: ", error);
+                alert("Gagal mengirim ucapan. Pastikan Firebase Config sudah benar dan Rules Firestore di set allow read, write.");
+            } finally {
+                btnSubmit.innerText = originalText;
+                btnSubmit.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
