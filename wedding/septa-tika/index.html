@@ -300,6 +300,25 @@
                     <div class="text-left w-24"><p class="font-serif text-xl text-gray-300">Sep<br><span class="text-sm">2026</span></p></div>
                 </div>
 
+                <div class="flex justify-center gap-5 mb-10 border-t border-brand-accent/20 pt-8">
+                    <div class="text-center">
+                        <div id="cd-days" class="font-serif text-3xl text-brand-accent font-bold drop-shadow-sm">00</div>
+                        <div class="font-sans text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">Hari</div>
+                    </div>
+                    <div class="text-center">
+                        <div id="cd-hours" class="font-serif text-3xl text-brand-accent font-bold drop-shadow-sm">00</div>
+                        <div class="font-sans text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">Jam</div>
+                    </div>
+                    <div class="text-center">
+                        <div id="cd-minutes" class="font-serif text-3xl text-brand-accent font-bold drop-shadow-sm">00</div>
+                        <div class="font-sans text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">Menit</div>
+                    </div>
+                    <div class="text-center">
+                        <div id="cd-seconds" class="font-serif text-3xl text-brand-accent font-bold drop-shadow-sm">00</div>
+                        <div class="font-sans text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">Detik</div>
+                    </div>
+                </div>
+
                 <div class="space-y-6 bg-brand-dark p-6 rounded-3xl border border-brand-accent/20">
                     <div>
                         <p class="font-sans text-[10px] font-bold uppercase tracking-widest text-brand-accent mb-2">Waktu Pelaksanaan</p>
@@ -336,18 +355,6 @@
                 <p class="font-serif text-[14px] text-gray-300 leading-relaxed px-2 mb-6">
                     Merupakan suatu kehormatan dan kebahagiaan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir memberikan doa restu pada acara Tasyakuran putra kami.
                 </p>
-
-                <div class="space-y-4 bg-brand-dark p-5 rounded-3xl border border-brand-accent/20">
-                    <div>
-                        <p class="font-sans text-[10px] font-bold uppercase tracking-widest text-brand-accent mb-1">Jadwal Acara</p>
-                        <p class="font-serif text-[15px] text-white">Menyusul</p>
-                    </div>
-                    <div class="w-8 h-px bg-white/20 mx-auto"></div>
-                    <div>
-                        <p class="font-sans text-[10px] font-bold uppercase tracking-widest text-brand-accent mb-1">Lokasi</p>
-                        <p class="font-serif text-[14px] text-gray-300">Digelar di kediaman kami</p>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -560,6 +567,36 @@
                 setTimeout(() => { toast.classList.remove('show'); }, 2500);
             }).catch(err => alert('Gagal menyalin.'));
         }
+
+        // HITUNG MUNDUR (COUNTDOWN) REALTIME
+        // Tanggal Acara: 5 September 2026 jam 09:00 pagi
+        const countDownDate = new Date("Sep 05, 2026 09:00:00").getTime();
+        
+        const timer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+            
+            // Jika waktu sudah lewat
+            if (distance < 0) {
+                clearInterval(timer);
+                document.getElementById("cd-days").innerText = "00";
+                document.getElementById("cd-hours").innerText = "00";
+                document.getElementById("cd-minutes").innerText = "00";
+                document.getElementById("cd-seconds").innerText = "00";
+                return;
+            }
+            
+            // Kalkulasi matematika waktu & tambahkan '0' di depan jika 1 digit
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            
+            document.getElementById("cd-days").innerText = days;
+            document.getElementById("cd-hours").innerText = hours;
+            document.getElementById("cd-minutes").innerText = minutes;
+            document.getElementById("cd-seconds").innerText = seconds;
+        }, 1000);
 
         // FIREBASE GUESTBOOK LOGIC
         const rsvpForm = document.getElementById('rsvp-form');
