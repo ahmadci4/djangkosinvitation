@@ -74,7 +74,7 @@
         .reveal { 
             opacity: 0; 
             filter: blur(5px); 
-            transform: translateY(60px); /* Jarak naik lebih terasa */
+            transform: translateY(60px); 
             transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
         }
         .reveal.visible { 
@@ -89,7 +89,7 @@
 
         /* --- EFEK SINEMATIK GALERI (BLUR -> TAJAM -> ZOOM & GESER) --- */
         .masonry-gallery { column-count: 2; column-gap: 12px; }
-        .masonry-item { break-inside: avoid; margin-bottom: 12px; border-radius: 12px; overflow: hidden; position: relative; background: #000; }
+        .masonry-item { break-inside: avoid; margin-bottom: 12px; border-radius: 12px; overflow: hidden; position: relative; background: #000; cursor: pointer; }
         
         .masonry-item img {
             width: 100%; height: auto; display: block;
@@ -114,8 +114,29 @@
             100% { opacity: 1; filter: blur(0px) brightness(0.9) contrast(1.1); transform: scale(1) translateX(-2%); }
         }
 
-        /* Efek Hover (Tamu menyentuh foto) */
         .masonry-item:hover img, .masonry-item:active img { filter: brightness(1.1) contrast(1.2) !important; transition: filter 0.5s ease; }
+
+        /* --- EFEK DOUBLE TAP TO LIKE (HATI MERAH) --- */
+        .like-heart {
+            position: absolute;
+            transform: translate(-50%, -50%) scale(0);
+            color: #ef4444; /* Warna merah hati yang elegan */
+            opacity: 0;
+            pointer-events: none; /* Agar tidak menghalangi klik ganda berikutnya */
+            z-index: 50;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+        }
+        .like-heart.animate {
+            animation: popHeart 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes popHeart {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            15% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            30% { transform: translate(-50%, -50%) scale(0.9); opacity: 1; }
+            45% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            70% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
 
         /* Musik & Menu UI */
         #audio-control { animation: pulseShadow 2s infinite; }
@@ -239,6 +260,7 @@
                         </div>
                         <h4 class="font-serif text-2xl text-brand-accent font-bold mb-4">Awal Bertemu</h4>
                         <div class="flex flex-col gap-6">
+                            <!-- Bingkai Foto Editorial Premium (object-top menjaga wajah agar tidak terpotong) -->
                             <div class="w-full h-72 rounded-3xl overflow-hidden border border-brand-accent/30 shadow-[0_15px_30px_rgba(0,0,0,0.5)] relative group">
                                 <img src="images/foto13.jpeg" class="w-full h-full object-cover object-top transition-transform duration-1000 group-hover:scale-110">
                                 <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/10 to-transparent pointer-events-none"></div>
@@ -254,6 +276,7 @@
                         </div>
                         <h4 class="font-serif text-2xl text-brand-accent font-bold mb-4">Pendekatan</h4>
                         <div class="flex flex-col gap-6">
+                            <!-- Bingkai Foto Editorial Premium -->
                             <div class="w-full h-72 rounded-3xl overflow-hidden border border-brand-accent/30 shadow-[0_15px_30px_rgba(0,0,0,0.5)] relative group">
                                 <img src="images/foto10.jpeg" class="w-full h-full object-cover object-top transition-transform duration-1000 group-hover:scale-110">
                                 <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/10 to-transparent pointer-events-none"></div>
@@ -269,6 +292,7 @@
                         </div>
                         <h4 class="font-serif text-2xl text-brand-accent font-bold mb-4">Komitmen</h4>
                         <div class="flex flex-col gap-6">
+                            <!-- Bingkai Foto Editorial Premium -->
                             <div class="w-full h-72 rounded-3xl overflow-hidden border border-brand-accent/30 shadow-[0_15px_30px_rgba(0,0,0,0.5)] relative group">
                                 <img src="images/foto4.jpeg" class="w-full h-full object-cover object-top transition-transform duration-1000 group-hover:scale-110">
                                 <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/10 to-transparent pointer-events-none"></div>
@@ -283,6 +307,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
                         </div>
                         
+                        <!-- Bingkai Foto Editorial Premium Terakhir -->
                         <div class="w-full h-72 rounded-3xl overflow-hidden border border-brand-accent/30 shadow-[0_15px_30px_rgba(0,0,0,0.5)] relative group mb-8 mt-6 mx-auto">
                             <img src="images/foto5.jpeg" class="w-full h-full object-cover object-top transition-transform duration-1000 group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/10 to-transparent pointer-events-none"></div>
@@ -310,6 +335,7 @@
                     
                     <h4 class="font-serif text-3xl text-white mb-6 font-bold border-b border-brand-accent/30 inline-block pb-3">Akad & Resepsi</h4>
                     
+                    <!-- Penambahan Tanggal Tepat Di atas Countdown -->
                     <div class="mb-8">
                         <p class="font-serif text-2xl text-brand-accent tracking-wider">Sabtu, 05 September 2026</p>
                     </div>
@@ -349,6 +375,7 @@
                             <p class="font-sans text-[10px] font-bold uppercase tracking-widest text-brand-accent mb-1">Lokasi Acara</p>
                             <p class="font-serif text-sm text-white leading-relaxed">Jln Raya Anyar, Dusun Sri Menganti<br>Desa Anyar</p>
                         </div>
+                        <!-- Link Google Maps Paling Baru -->
                         <a href="https://www.google.com/maps/place/8%C2%B013'52.0%22S+116%C2%B025'31.6%22E/@-8.2311153,116.4228707,17z/data=!3m1!4b1!4m4!3m3!8m2!3d-8.2311153!4d116.4254456?hl=id&entry=ttu&g_ep=EgoyMDI2MDgyNi4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="inline-block mt-4 px-8 py-4 bg-brand-accent text-brand-dark rounded-full font-sans text-[11px] font-bold uppercase tracking-widest hover:bg-white transition-all shadow-[0_5px_20px_rgba(212,175,55,0.4)]">Buka Peta Lokasi</a>
                     </div>
                 </div>
@@ -358,7 +385,9 @@
             <section id="sec-galeri" class="py-20 px-4 bg-brand-card/50 backdrop-blur-sm border-y border-white/10">
                 <div class="reveal text-center mb-12">
                     <h3 class="font-serif text-4xl text-white font-bold mb-3">Galeri Momen</h3>
-                    <p class="font-sans text-[10px] font-bold uppercase tracking-widest text-brand-accent">Rekam Jejak Kasih</p>
+                    <!-- Tambahan Petunjuk Double Tap -->
+                    <p class="font-sans text-[10px] font-bold uppercase tracking-widest text-brand-accent mb-2">Rekam Jejak Kasih</p>
+                    <p class="text-[9px] text-gray-400 italic">Ketuk 2x pada foto untuk menyukai ❤️</p>
                 </div>
 
                 <div class="masonry-gallery px-2">
@@ -481,6 +510,7 @@
             <span class="text-[9px] uppercase font-bold tracking-widest">Profil</span>
         </a>
         <a href="#sec-acara" class="flex flex-col items-center text-gray-300 hover:text-brand-accent transition">
+            <!-- Ikon Kalender untuk Menu Acara -->
             <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             <span class="text-[9px] uppercase font-bold tracking-widest">Acara</span>
         </a>
@@ -498,7 +528,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Konfigurasi Firebase Abang
+        // Konfigurasi Firebase Asli Milik Abang
         const firebaseConfig = {
             apiKey: "AIzaSyD7U944RAN4JEivkf6RsoyWWY06K8S8GKs",
             authDomain: "wedding-invitation-4163c.firebaseapp.com",
@@ -697,7 +727,7 @@
                     const span = document.createElement('span');
                     span.textContent = text[i];
                     if(text[i] === ' ') span.innerHTML = '&nbsp;';
-                    span.style.animationDelay = `${delay * 0.02}s`; /* Ketikan sedikit dipercepat agar tidak bosan menunggu */
+                    span.style.animationDelay = `${delay * 0.02}s`;
                     span.className = 'letter-anim inline-block';
                     element.appendChild(span);
                     delay++;
@@ -706,16 +736,13 @@
             element.classList.add('typed');
         }
 
-        // --- OBSERVER UNTUK ANIMASI BERURUTAN (STAGGERED) ---
         const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const el = entry.target;
                     
-                    // Trigger animasi naik (fade up) & blur hilang
                     el.classList.add('visible');
                     
-                    // Trigger animasi ketik khusus untuk kisah cinta (dengan jeda waktu setelah naik)
                     const typeTextElement = el.querySelector('.type-text');
                     if(typeTextElement) {
                         setTimeout(() => { typeWriterEffect(typeTextElement); }, 500);
@@ -726,10 +753,52 @@
                     obs.unobserve(el);
                 }
             });
-        }, { threshold: 0.1 }); // Threshold diperkecil agar muncul sedikit lebih awal saat digulir
+        }, { threshold: 0.1 }); 
 
-        // Amati semua elemen yang memiliki class 'reveal'
         document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+        /* --- SCRIPT DOUBLE TAP UNTUK EFEK LIKE --- */
+        let lastTap = 0;
+        document.querySelectorAll('.masonry-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+                if (tapLength < 500 && tapLength > 0) {
+                    // Terdeteksi Ketukan Ganda
+                    e.preventDefault();
+                    tampilkanHati(e, this);
+                }
+                lastTap = currentTime;
+            });
+        });
+
+        function tampilkanHati(e, container) {
+            // Membuat elemen ikon hati
+            const heart = document.createElement('div');
+            heart.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" class="w-20 h-20"><path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z"></path></svg>`;
+            heart.className = 'like-heart';
+            
+            // Menentukan posisi klik untuk memunculkan ikon
+            const rect = container.getBoundingClientRect();
+            // Jika koordinat klik tidak terbaca akurat, posisikan persis di tengah foto
+            let x = e.clientX ? e.clientX - rect.left : rect.width / 2;
+            let y = e.clientY ? e.clientY - rect.top : rect.height / 2;
+
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+
+            container.appendChild(heart);
+
+            // Memicu animasi
+            requestAnimationFrame(() => {
+                heart.classList.add('animate');
+            });
+
+            // Menghapus ikon dari memori setelah animasi selesai (1 detik)
+            setTimeout(() => {
+                heart.remove();
+            }, 1000);
+        }
     </script>
 </body>
 </html>
